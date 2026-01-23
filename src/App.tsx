@@ -1,5 +1,4 @@
 import { RouterProvider } from "react-router-dom";
-import "./App.css";
 import { QueryProvider } from "./app/providers/QueryProvider";
 import { router } from "./app/router";
 import { ErrorBoundary } from "./shared/ui/ErrorBoundary";

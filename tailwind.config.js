@@ -1,7 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./src/**/*.{ts,tsx}"],
-
+  content: [
+    "./index.html",
+    "./src/**/*.{ts,tsx, css}", // Includes all TypeScript and TSX files in the src directory
+  ],
   theme: {
     extend: {
       /* =========================
@@ -9,31 +11,29 @@ export default {
          ========================= */
       colors: {
         /* Backgrounds */
-        "bg-primary": "rgb(var(--color-bg-primary) / <alpha-value>)",
-        "bg-secondary": "rgb(var(--color-bg-secondary) / <alpha-value>)",
-        "bg-surface": "rgb(var(--color-bg-surface) / <alpha-value>)",
+        "bg-primary": "rgb(var(--color-bg-primary) )",
+        "bg-secondary": "rgb(var(--color-bg-secondary) )",
+        "bg-surface": "rgb(var(--color-bg-surface) )",
 
         /* Text */
-        "text-primary": "rgb(var(--color-text-primary) / <alpha-value>)",
-        "text-secondary": "rgb(var(--color-text-secondary) / <alpha-value>)",
-        "text-muted": "rgb(var(--color-text-muted) / <alpha-value>)",
+        "text-primary": "rgb(var(--color-text-primary) )",
+        "text-secondary": "rgb(var(--color-text-secondary) )",
+        "text-muted": "rgb(var(--color-text-muted) )",
 
         /* Borders */
-        "border-default": "rgb(var(--color-border-default) / <alpha-value>)",
-        "border-subtle": "rgb(var(--color-border-subtle) / <alpha-value>)",
+        "border-default": "rgb(var(--color-border-default) )",
+        "border-subtle": "rgb(var(--color-border-subtle) )",
 
         /* Actions */
-        "action-primary": "rgb(var(--color-action-primary) / <alpha-value>)",
-        "action-primary-hover":
-          "rgb(var(--color-action-primary-hover) / <alpha-value>)",
-        "action-secondary":
-          "rgb(var(--color-action-secondary) / <alpha-value>)",
+        "action-primary": "rgb(var(--color-action-primary) )",
+        "action-primary-hover": "rgb(var(--color-action-primary-hover) )",
+        "action-secondary": "rgb(var(--color-action-secondary) )",
 
         /* States */
-        "state-success": "rgb(var(--color-state-success) / <alpha-value>)",
-        "state-warning": "rgb(var(--color-state-warning) / <alpha-value>)",
-        "state-error": "rgb(var(--color-state-error) / <alpha-value>)",
-        "state-info": "rgb(var(--color-state-info) / <alpha-value>)",
+        "state-success": "rgb(var(--color-state-success) )",
+        "state-warning": "rgb(var(--color-state-warning) )",
+        "state-error": "rgb(var(--color-state-error) )",
+        "state-info": "rgb(var(--color-state-info) )",
       },
 
       /* =========================
