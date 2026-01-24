@@ -11,6 +11,9 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  role?: string;
+  organization?: string;
+  premium?: string;
 }
 
 export const tokenUtils = {

@@ -17,14 +17,19 @@ export interface SignupPayload {
   password: string; // User's password
 }
 
+export interface SigninPayload {
+  email: string; // User's email
+  password: string; // User's password
+}
+
 export interface VerifyOtpPayload {
   email: string; // Email to verify
   otp: string; // OTP code
-  purpose: string; // signup || reset password
+  purpose: string; // signup || reset
   newPassword?: string; // If verifying for reset password
 }
 
-export interface VerifyOtpResponse {
+export interface authResponse {
   accessToken: string; // New access token
   refreshToken: string; // New refresh token
   user: User; // User details
@@ -59,7 +64,7 @@ const apiClient = {
       throw new Error(data.message || data.error || "Request failed");
     }
 
-    return data;
+    return data.data ? data.data : data;
   },
 };
 
@@ -69,6 +74,18 @@ export const authApi = {
   },
 
   verifyOtp: (payload: VerifyOtpPayload) => {
-    return apiClient.post<VerifyOtpResponse>("/user/verify-otp", payload);
+    return apiClient.post<authResponse>("/user/verify-otp", payload);
+  },
+
+  signin: (payload: SigninPayload) => {
+    return apiClient.post<authResponse>("/user/signin", payload);
+  },
+
+  requestPasswordReset: (payload: { email: string }) => {
+    return apiClient.post<void>("/user/reset", payload);
+  },
+
+  resetPassword: (payload: VerifyOtpPayload) => {
+    return apiClient.post<authResponse>("/user/verify-otp", payload);
   },
 };

@@ -22,12 +22,7 @@ export const SignupPage: React.FC = () => {
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
-
-  const accessToken = tokenUtils.getAccessToken();
-  const refreshToken = tokenUtils.getRefreshToken();
-  if (accessToken && refreshToken) {
-    return <Navigate to="/home" replace />;
-  }
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 
   const signupMutation = useMutation({
     mutationFn: authApi.signup,
@@ -76,6 +71,11 @@ export const SignupPage: React.FC = () => {
     formData.email.trim() !== "" &&
     formData.password.trim() !== "";
 
+  const accessToken = tokenUtils.getAccessToken();
+  const refreshToken = tokenUtils.getRefreshToken();
+  if (accessToken && refreshToken) {
+    return <Navigate to="/home" replace />;
+  }
   return (
     <div className="h-screen  flex items-center justify-center relative overflow-hidden">
       {/* Ambient glow */}
@@ -175,21 +175,70 @@ export const SignupPage: React.FC = () => {
               <label className="block text-sm text-text-secondary mb-1.5">
                 Password
               </label>
-              <input
-                disabled={isSubmitting}
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                className={`w-full px-3 py-2.5 bg-bg-secondary border border-border-default rounded-md text-text-primary placeholder-text-muted transition focus:outline-none focus:border-action-primary focus:ring-2 focus:ring-action-primary/30
+              <div className="relative">
+                <input
+                  disabled={isSubmitting}
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  className={`w-full px-3 py-2.5 bg-bg-secondary border border-border-default rounded-md text-text-primary placeholder-text-muted transition focus:outline-none focus:border-action-primary focus:ring-2 focus:ring-action-primary/30
                       ${
                         fieldErrors.password
                           ? "border-red-500 focus:border-red-500 focus:ring-red-500/30"
                           : "border-border-default focus:border-action-primary focus:ring-action-primary/30"
                       }
                   `}
-              />
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-3 flex items-center text-text-muted hover:text-text-primary"
+                >
+                  {showPassword ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <title>Hide password</title>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3.98 8.223a11.042 11.042 0 0116.04 0M12 3v1.5m0 15V21m9-9h-1.5m-15 0H3m16.364 6.364l-1.06-1.06M6.636 6.636l-1.06-1.06m12.728 12.728l-1.06-1.06M6.636 17.364l-1.06-1.06"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <title>Show password</title>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-.274.857-.69 1.655-1.227 2.364M15.75 15.75l-3.75 3.75m0 0l-3.75-3.75m3.75 3.75V12"
+                      />
+                    </svg>
+                  )}
+                  <span className="sr-only">
+                    {showPassword ? "Hide password" : "Show password"}
+                  </span>
+                </button>
+              </div>
               {fieldErrors.password && (
                 <p className="mt-1 text-xs text-red-500">
                   {fieldErrors.password}
@@ -237,7 +286,10 @@ export const SignupPage: React.FC = () => {
             {/* Footer */}
             <p className="text-sm text-center text-text-secondary">
               Already have an account?{" "}
-              <span className="text-action-primary hover:underline cursor-pointer">
+              <span
+                className="text-action-primary hover:underline cursor-pointer"
+                onClick={() => navigate("/auth/signin")}
+              >
                 Sign in
               </span>
             </p>

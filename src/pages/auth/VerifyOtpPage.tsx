@@ -13,27 +13,6 @@ export const VerifyOtpPage: React.FC = () => {
   const [otp, setOtp] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const accessToken = tokenUtils.getAccessToken();
-  const refreshToken = tokenUtils.getRefreshToken();
-
-  /**
-   * 🔒 GUARD 1:
-   * If user is already authenticated,
-   * they should NEVER see verify OTP again
-   */
-  if (accessToken && refreshToken) {
-    return <Navigate to="/home" replace />;
-  }
-
-  /**
-   * 🔒 GUARD 2:
-   * Verify OTP page must only be reached
-   * via signup flow (email in navigation state)
-   */
-  if (!email) {
-    return <Navigate to="/auth/signup" replace />;
-  }
-
   const verifyMutation = useMutation({
     mutationFn: authApi.verifyOtp,
     onSuccess: (response) => {
@@ -63,6 +42,14 @@ export const VerifyOtpPage: React.FC = () => {
 
   const isSubmitting = verifyMutation.isPending;
 
+  /**
+   * Verify OTP page must only be reached
+   * via signup flow (email in navigation state)
+   */
+  if (!email) {
+    return <Navigate to="/auth/signup" replace />;
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!otp.trim()) return;
@@ -82,6 +69,18 @@ export const VerifyOtpPage: React.FC = () => {
     setOtp(value);
     if (errorMessage) setErrorMessage(null);
   };
+
+  const accessToken = tokenUtils.getAccessToken();
+  const refreshToken = tokenUtils.getRefreshToken();
+
+  /**
+   * 🔒 GUARD 1:
+   * If user is already authenticated,
+   * they should NEVER see verify OTP again
+   */
+  if (accessToken && refreshToken) {
+    return <Navigate to="/home" replace />;
+  }
 
   return (
     <div className="h-screen flex items-center justify-center relative overflow-hidden">

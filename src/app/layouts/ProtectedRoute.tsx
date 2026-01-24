@@ -8,7 +8,7 @@ const ProtectedRoute = () => {
   const isAuthenticated = Boolean(accessToken && refreshToken);
 
   if (!isAuthenticated) {
-    return <Navigate to="/auth/signup" replace />;
+    return <Navigate to="/auth/signin" replace />;
   }
 
   return <Outlet />;
