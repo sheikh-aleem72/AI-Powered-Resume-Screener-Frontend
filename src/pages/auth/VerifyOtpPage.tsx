@@ -4,32 +4,55 @@ import { useMutation } from "@tanstack/react-query";
 import { authApi } from "../../api/auth";
 import { tokenUtils } from "../../utils/tokenUtils";
 
+/**
+ * Verify OTP page
+ *
+ * Responsibilities:
+ * - Validate OTP entered by user
+ * - Complete signup flow by exchanging OTP for tokens
+ * - Persist auth state (tokens + minimal user info)
+ * - Prevent invalid access or revisiting after success
+ */
 export const VerifyOtpPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  /**
+   * Email is expected to be passed from signup page
+   * via navigation state. This page should never be
+   * accessed directly without it.
+   */
   const email: string | undefined = location.state?.email;
 
+  /** OTP input state (digits only, max 6) */
   const [otp, setOtp] = useState("");
+
+  /** Backend error message shown below OTP input */
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  /**
+   * OTP verification mutation.
+   * On success, backend returns tokens and user payload.
+   */
   const verifyMutation = useMutation({
     mutationFn: authApi.verifyOtp,
     onSuccess: (response) => {
       const { accessToken, refreshToken, user } = response;
 
-      // Store tokens
+      // Persist tokens for authenticated requests
       tokenUtils.setTokens(accessToken, refreshToken);
 
-      // Store minimal user info
+      // Store only minimal user data needed on client
       tokenUtils.setUser({
         id: user.id,
         name: user.name,
         email: user.email,
       });
 
-      // 🔑 Replace history so back button
-      // never returns to OTP page
+      /**
+       * Replace history so browser back button
+       * can never return to OTP page after success
+       */
       navigate("/home", { replace: true });
     },
     onError: (error: Error) => {
@@ -38,20 +61,29 @@ export const VerifyOtpPage: React.FC = () => {
     },
   });
 
+  /** OTP must be exactly 6 digits to enable submission */
   const isOtpComplete = otp.length === 6;
 
+  /** Unified loading state */
   const isSubmitting = verifyMutation.isPending;
 
   /**
+   * 🔒 GUARD 0:
    * Verify OTP page must only be reached
-   * via signup flow (email in navigation state)
+   * through signup flow (email present in state).
    */
   if (!email) {
     return <Navigate to="/auth/signup" replace />;
   }
 
+  /**
+   * Submit handler.
+   * Performs basic client-side validation
+   * before triggering OTP verification.
+   */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!otp.trim()) return;
     if (!isOtpComplete) return;
 
@@ -64,9 +96,15 @@ export const VerifyOtpPage: React.FC = () => {
     });
   };
 
+  /**
+   * OTP input handler.
+   * - Allows only numeric characters
+   * - Clears error message as user types
+   */
   const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, "");
     setOtp(value);
+
     if (errorMessage) setErrorMessage(null);
   };
 
@@ -76,7 +114,7 @@ export const VerifyOtpPage: React.FC = () => {
   /**
    * 🔒 GUARD 1:
    * If user is already authenticated,
-   * they should NEVER see verify OTP again
+   * they should never see verify OTP again.
    */
   if (accessToken && refreshToken) {
     return <Navigate to="/home" replace />;
@@ -84,7 +122,7 @@ export const VerifyOtpPage: React.FC = () => {
 
   return (
     <div className="h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Ambient glow */}
+      {/* Ambient background glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.08),transparent_60%)]" />
 
       <div className="relative w-full max-w-md px-4">
@@ -119,7 +157,8 @@ export const VerifyOtpPage: React.FC = () => {
                 maxLength={6}
                 placeholder="000000"
                 className={`
-                  w-full px-3 py-2.5 rounded-md text-center text-lg tracking-widest
+                  w-full px-3 py-2.5 rounded-md
+                  text-center text-lg tracking-widest
                   bg-bg-secondary text-text-primary placeholder-text-muted
                   border transition focus:outline-none
                   ${
@@ -131,7 +170,7 @@ export const VerifyOtpPage: React.FC = () => {
               />
             </div>
 
-            {/* Error Message */}
+            {/* Backend / validation error */}
             {errorMessage && (
               <div className="text-sm text-red-500 bg-red-500/10 border border-red-500/30 rounded-md px-3 py-2">
                 {errorMessage}
