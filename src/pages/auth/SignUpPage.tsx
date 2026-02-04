@@ -14,6 +14,7 @@ type FieldErrors = Partial<{
   organization: string;
   email: string;
   password: string;
+  role: string;
 }>;
 
 /**

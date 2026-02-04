@@ -62,6 +62,7 @@ export const SignInPage: React.FC = () => {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
       });
 
       // Replace history so user cannot navigate back to signin
