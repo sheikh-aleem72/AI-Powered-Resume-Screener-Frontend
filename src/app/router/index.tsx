@@ -8,6 +8,7 @@ import HomePage from "../../pages/Home/HomePage";
 import ProtectedRoute from "../layouts/ProtectedRoute";
 import { SignInPage } from "../../pages/auth/SignInPage";
 import { ForgetPasswordPage } from "../../pages/auth/ForgetPasswordPage";
+import { JobsPage } from "../../pages/jobs/JobsPage";
 
 export const router = createBrowserRouter([
   {
@@ -24,7 +25,10 @@ export const router = createBrowserRouter([
     children: [
       {
         element: <AppLayout />,
-        children: [{ path: "/home", element: <HomePage /> }],
+        children: [
+          { path: "/home", element: <HomePage /> },
+          { path: "/jobs", element: <JobsPage /> },
+        ],
       },
     ],
   },
