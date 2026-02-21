@@ -34,6 +34,19 @@ export interface Job {
   failedResumes: number;
 }
 
+export interface JobDetail {
+  title: string;
+  description: string;
+  required_skills: string[];
+  experience_level: string;
+  min_experience_years: number;
+  totalResumes: number;
+  completedResumes: number;
+  failedResumes: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                             Low-level Client                               */
 /* -------------------------------------------------------------------------- */
@@ -85,5 +98,9 @@ export const jobsApi = {
    */
   fetchJobs: () => {
     return apiClient.get<Job[]>("/job/");
+  },
+
+  fetchJobById: (jobId: string) => {
+    return apiClient.get<JobDetail>(`/job/${jobId}`);
   },
 };
