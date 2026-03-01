@@ -1,4 +1,4 @@
-import { JobTable } from "../../components/jobs/jobTable";
+import { JobTable } from "../../components/jobs/JobTable";
 import { useJobs } from "../../hooks/job/useJobs";
 
 export const JobsPage = () => {

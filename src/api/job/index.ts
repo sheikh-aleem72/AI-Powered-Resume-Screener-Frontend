@@ -47,6 +47,48 @@ export interface JobDetail {
   updatedAt: string;
 }
 
+export interface ResumeProcessing {
+  _id: string;
+  resumeObjectId: string;
+  externalResumeId: string;
+  resumeUrl: string;
+  rank: number | null;
+  finalScore: number | null;
+  status: "queued" | "processing" | "completed" | "failed";
+  embeddingStatus: "pending" | "completed" | "failed";
+  rankingStatus: "pending" | "completed" | "skipped";
+  passFail: string;
+  analysis: any;
+  analysisStatus: string;
+  analysisCompletedAt: Date;
+  analysisError: string;
+  explanation: any | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface JobResumesResponse {
+  page: number;
+  limit: number;
+  total: number;
+  resumes: ResumeProcessing[];
+}
+
+export interface JobUpdatesResponse {
+  jobId: string;
+  serverTime: string;
+  updates: {
+    resumeId: string;
+    status: string;
+    analysisStatus: string;
+    passFail: string;
+    rank: number | null;
+    finalScore: number | null;
+    explanation: string | null;
+    updatedAt: string;
+  }[];
+}
+
 /* -------------------------------------------------------------------------- */
 /*                             Low-level Client                               */
 /* -------------------------------------------------------------------------- */
@@ -102,5 +144,29 @@ export const jobsApi = {
 
   fetchJobById: (jobId: string) => {
     return apiClient.get<JobDetail>(`/job/${jobId}`);
+  },
+
+  fetchJobResumes: (
+    jobId: string,
+    page: number,
+    limit: number,
+    passFail?: string | undefined
+  ) => {
+    const query = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
+
+    if (passFail !== undefined) {
+      query.append("passFail", passFail);
+    }
+
+    return apiClient.get<JobResumesResponse>(
+      `/job/${jobId}/resumes?${query.toString()}`
+    );
+  },
+
+  fetchJobUpdates: (jobId: string) => {
+    return apiClient.get<JobUpdatesResponse>(`/job/${jobId}/updates`);
   },
 };

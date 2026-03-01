@@ -10,6 +10,7 @@ import { SignInPage } from "../../pages/auth/SignInPage";
 import { ForgetPasswordPage } from "../../pages/auth/ForgetPasswordPage";
 import { JobsPage } from "../../pages/jobs/JobsPage";
 import { JobDetailPage } from "../../pages/jobs/JobDetailPage";
+import { ResumeDetailPage } from "../../pages/resume/ResumeDetailPage";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
           { path: "/home", element: <HomePage /> },
           { path: "/jobs", element: <JobsPage /> },
           { path: "/jobs/:jobId", element: <JobDetailPage /> },
+          {
+            path: "/jobs/:jobId/resumes/:resumeId",
+            element: <ResumeDetailPage />,
+          },
         ],
       },
     ],
