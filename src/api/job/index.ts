@@ -1,29 +1,29 @@
 /**
- * Centralized Job API client
+ * Job API Module
  *
- * Responsibilities:
- * - Provide abstraction over job-related backend calls
- * - Attach access + refresh tokens automatically
- * - Handle access-token refresh via response headers
- * - Throw errors for non-2xx responses
+ * Purpose
+ * -------
+ * This module provides a thin abstraction layer over all job-related
+ * backend endpoints used by the recruiter dashboard.
  *
- * IMPORTANT:
- * - UI layers must handle errors via React Query
- * - This client contains ZERO UI logic
+ * Design Principles
+ * -----------------
+ * - This layer ONLY performs HTTP requests.
+ * - Authentication, token refresh, and 401 handling are centralized
+ *   inside `httpClient`.
+ * - No UI logic, state management, or React code exists here.
+ * - All functions return typed promises for React Query consumption.
  */
 
-import { tokenUtils } from "../../utils/tokenUtils";
+import { httpClient } from "../../lib/httpClient";
 
 /* -------------------------------------------------------------------------- */
-/*                                  Config                                    */
+/*                                   Types                                    */
 /* -------------------------------------------------------------------------- */
 
-const API_BASE = import.meta.env.VITE_BACKEND_API_URL;
-
-/* -------------------------------------------------------------------------- */
-/*                                 Types                                      */
-/* -------------------------------------------------------------------------- */
-
+/**
+ * Lightweight job representation used in job list view.
+ */
 export interface Job {
   _id: string;
   title: string;
@@ -34,39 +34,69 @@ export interface Job {
   failedResumes: number;
 }
 
+/**
+ * Detailed job information used on Job Detail page.
+ */
 export interface JobDetail {
   title: string;
   description: string;
   required_skills: string[];
   experience_level: string;
   min_experience_years: number;
+
   totalResumes: number;
   completedResumes: number;
   failedResumes: number;
+
   createdAt: string;
   updatedAt: string;
 }
 
+/**
+ * ResumeProcessing represents the processing state of a resume
+ * for a specific job.
+ *
+ * This mirrors the backend `ResumeProcessing` document.
+ */
 export interface ResumeProcessing {
   _id: string;
+
+  /** MongoDB ID of the resume */
   resumeObjectId: string;
+
+  /** External resume identifier used inside batches */
   externalResumeId: string;
+
   resumeUrl: string;
+
   rank: number | null;
   finalScore: number | null;
+
   status: "queued" | "processing" | "completed" | "failed";
+
   embeddingStatus: "pending" | "completed" | "failed";
+
   rankingStatus: "pending" | "completed" | "skipped";
+
   passFail: string;
+
   analysis: any;
+
   analysisStatus: string;
+
   analysisCompletedAt: Date;
+
   analysisError: string;
+
   explanation: any | null;
+
   createdAt: string;
   updatedAt: string;
 }
 
+/**
+ * Paginated response for resumes belonging to a job.
+ */
 export interface JobResumesResponse {
   page: number;
   limit: number;
@@ -74,9 +104,18 @@ export interface JobResumesResponse {
   resumes: ResumeProcessing[];
 }
 
+/**
+ * Incremental updates endpoint response.
+ *
+ * This endpoint supports polling so the frontend can update
+ * resume status without refetching the entire resume list.
+ */
 export interface JobUpdatesResponse {
   jobId: string;
+
+  /** Server timestamp when updates were generated */
   serverTime: string;
+
   updates: {
     resumeId: string;
     status: string;
@@ -90,67 +129,48 @@ export interface JobUpdatesResponse {
 }
 
 /* -------------------------------------------------------------------------- */
-/*                             Low-level Client                               */
-/* -------------------------------------------------------------------------- */
-
-const apiClient = {
-  get: async <T = any>(endpoint: string): Promise<T> => {
-    const accessToken = tokenUtils.getAccessToken();
-    const refreshToken = tokenUtils.getRefreshToken();
-
-    if (!accessToken || !refreshToken) {
-      throw new Error("Authentication required. Please login again.");
-    }
-
-    const response = await fetch(`${API_BASE}${endpoint}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        "x-refresh-token": refreshToken,
-      },
-    });
-
-    /**
-     * Handle refreshed access token
-     * Backend sends new token in `x-access-token`
-     */
-    const newAccessToken = response.headers.get("x-access-token");
-    if (newAccessToken) {
-      tokenUtils.setTokens(newAccessToken, refreshToken);
-    }
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Request failed");
-    }
-
-    return data.data ? data.data : data;
-  },
-};
-
-/* -------------------------------------------------------------------------- */
 /*                                Public API                                  */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Job API functions.
+ *
+ * These functions are consumed by React Query hooks.
+ */
 export const jobsApi = {
   /**
-   * Fetch all jobs created by recruiter.
+   * Fetch all jobs created by the authenticated recruiter.
+   *
+   * Used by:
+   * - Jobs dashboard page
    */
   fetchJobs: () => {
-    return apiClient.get<Job[]>("/job/");
+    return httpClient.get<Job[]>("/job/");
   },
 
+  /**
+   * Fetch detailed information about a specific job.
+   *
+   * Used by:
+   * - Job detail page
+   */
   fetchJobById: (jobId: string) => {
-    return apiClient.get<JobDetail>(`/job/${jobId}`);
+    return httpClient.get<JobDetail>(`/job/${jobId}`);
   },
 
+  /**
+   * Fetch paginated resume processing results for a job.
+   *
+   * Optional filtering by pass/fail status is supported.
+   *
+   * Used by:
+   * - Resume table on job detail page
+   */
   fetchJobResumes: (
     jobId: string,
     page: number,
     limit: number,
-    passFail?: string | undefined
+    passFail?: string
   ) => {
     const query = new URLSearchParams({
       page: page.toString(),
@@ -161,12 +181,21 @@ export const jobsApi = {
       query.append("passFail", passFail);
     }
 
-    return apiClient.get<JobResumesResponse>(
+    return httpClient.get<JobResumesResponse>(
       `/job/${jobId}/resumes?${query.toString()}`
     );
   },
 
+  /**
+   * Fetch incremental processing updates for resumes.
+   *
+   * This endpoint supports polling and allows the UI to
+   * update resume status without refetching the entire list.
+   *
+   * Used by:
+   * - useJobUpdates hook
+   */
   fetchJobUpdates: (jobId: string) => {
-    return apiClient.get<JobUpdatesResponse>(`/job/${jobId}/updates`);
+    return httpClient.get<JobUpdatesResponse>(`/job/${jobId}/updates`);
   },
 };
