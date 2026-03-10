@@ -128,6 +128,25 @@ export interface JobUpdatesResponse {
   }[];
 }
 
+export interface createJobPayload {
+  title: string;
+  company: string;
+  location?: string;
+  description: string;
+  required_skills: string[];
+  prefered_skills?: string[];
+  experience_level: string;
+  min_experience_years: number;
+}
+
+export interface CreateJobResponse {
+  success: boolean;
+  data: {
+    _id: string;
+    title: string;
+  };
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                Public API                                  */
 /* -------------------------------------------------------------------------- */
@@ -197,5 +216,9 @@ export const jobsApi = {
    */
   fetchJobUpdates: (jobId: string) => {
     return httpClient.get<JobUpdatesResponse>(`/job/${jobId}/updates`);
+  },
+
+  createJob: (payload: createJobPayload) => {
+    return httpClient.post(`/job/`, payload);
   },
 };

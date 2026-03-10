@@ -42,7 +42,7 @@ const request = async <T>(
    * If refresh token expired → backend returns 401
    * Redirect user to login
    */
-  if (response.status === 401) {
+  if (response.status === 401 || response.status === 403) {
     tokenUtils.clearAuth();
     window.location.href = "/auth/signin";
     throw new Error("Session expired. Please login again.");

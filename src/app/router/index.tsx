@@ -11,6 +11,7 @@ import { ForgetPasswordPage } from "../../pages/auth/ForgetPasswordPage";
 import { JobsPage } from "../../pages/jobs/JobsPage";
 import { JobDetailPage } from "../../pages/jobs/JobDetailPage";
 import { ResumeDetailPage } from "../../pages/resume/ResumeDetailPage";
+import NewUploadPage from "../../pages/uploads/NewUploadPage";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +36,7 @@ export const router = createBrowserRouter([
             path: "/jobs/:jobId/resumes/:resumeId",
             element: <ResumeDetailPage />,
           },
+          { path: "/uploads/new", element: <NewUploadPage /> },
         ],
       },
     ],
