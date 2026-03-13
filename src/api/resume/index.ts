@@ -36,8 +36,11 @@ export interface ResumeMeta {
 }
 
 export interface UploadedResume {
-  resumeObjectId: string;
-  resumeUrl: string;
+  resumes: {
+    resumeObjectId: string;
+    resumeUrl: string;
+  }[];
+  size: number;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -74,14 +77,13 @@ export const resumeApi = {
 /*                         Resume Upload Orchestrator                         */
 /* -------------------------------------------------------------------------- */
 
-export const uploadResumes = async (
-  files: File[]
-): Promise<UploadedResume[]> => {
+export const uploadResumes = async (files: File[]): Promise<UploadedResume> => {
   /* ---------------------------------------------------------------------- */
   /* Step 1: Request presigned URLs                                         */
   /* ---------------------------------------------------------------------- */
 
   const fileNames = files.map((file) => file.name);
+  let totalSize = files.reduce((sum, file) => sum + file.size, 0);
 
   const presigned = await uploadApi.getPresignedUrls(fileNames);
 
@@ -115,8 +117,10 @@ export const uploadResumes = async (
   /* Step 4: Transform response for batch creation API                      */
   /* ---------------------------------------------------------------------- */
 
-  return savedResumes.map((resume) => ({
+  const resumes = savedResumes.map((resume) => ({
     resumeObjectId: resume._id,
     resumeUrl: resume.url,
   }));
+
+  return { resumes: resumes, size: totalSize };
 };

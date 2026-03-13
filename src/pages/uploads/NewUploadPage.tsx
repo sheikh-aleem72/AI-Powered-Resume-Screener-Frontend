@@ -1,17 +1,34 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { useCreateJob } from "../../hooks/job/useCreateJob";
+import { useCreateBatch } from "../../hooks/batch/useCreateBatch";
+
 import { uploadResumes } from "../../api/resume";
 
 export default function NewUploadPage() {
-  const { mutateAsync: createJobMutation, isPending } = useCreateJob();
+  const navigate = useNavigate();
+
+  const { mutateAsync: createJob, isPending: isCreatingJob } = useCreateJob();
+  const { mutateAsync: createBatch, isPending: isCreatingBatch } =
+    useCreateBatch();
 
   const [jobId, setJobId] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
-  const [uploadedResumes, setUploadedResumes] = useState<any[]>([]);
+  const [uploadedResumes, setUploadedResumes] = useState<
+    { resumeObjectId: string; resumeUrl: string }[]
+  >([]);
+  const [totalSize, setTotalSize] = useState<number>(0);
   const [isUploading, setIsUploading] = useState(false);
 
+  const hasUploadedResumes = uploadedResumes.length > 0;
+
+  /* -------------------------------------------------------------------------- */
+  /*                              Job Creation                                  */
+  /* -------------------------------------------------------------------------- */
+
   const handleCreateJob = async () => {
-    const response = await createJobMutation({
+    const job = await createJob({
       title: "Frontend Developer",
       company: "ALSA Infotech",
       description: "React + TypeScript developer",
@@ -20,40 +37,78 @@ export default function NewUploadPage() {
       min_experience_years: 2,
     });
 
-    setJobId(response._id);
+    setJobId(job._id);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    setFiles(Array.from(e.target.files));
+  /* -------------------------------------------------------------------------- */
+  /*                              File Selection                                */
+  /* -------------------------------------------------------------------------- */
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = event.target.files;
+    if (!selected) return;
+
+    setFiles(Array.from(selected));
   };
+
+  /* -------------------------------------------------------------------------- */
+  /*                               Upload Logic                                 */
+  /* -------------------------------------------------------------------------- */
 
   const handleUpload = async () => {
-    if (!files.length) return;
+    if (files.length === 0) return;
 
     setIsUploading(true);
 
     try {
-      const result = await uploadResumes(files);
+      const { resumes, size } = await uploadResumes(files);
 
-      setUploadedResumes(result);
+      setUploadedResumes(resumes);
+      setTotalSize(size);
+    } catch (error) {
+      console.error("Resume upload failed", error);
     } finally {
       setIsUploading(false);
     }
   };
 
+  /* -------------------------------------------------------------------------- */
+  /*                             Batch Creation                                 */
+  /* -------------------------------------------------------------------------- */
+
+  const handleCreateBatch = async () => {
+    if (!jobId || !hasUploadedResumes) return;
+
+    await createBatch({
+      jobDescriptionId: jobId,
+      resumes: uploadedResumes,
+      size: totalSize,
+    });
+
+    navigate(`/jobs/${jobId}`);
+  };
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  Render                                    */
+  /* -------------------------------------------------------------------------- */
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <h1 className="text-xl font-semibold">Create Job & Upload Resumes</h1>
 
+      {/* ----------------------------- Create Job ----------------------------- */}
+
       {!jobId && (
         <button
           onClick={handleCreateJob}
-          className="px-4 py-2 bg-blue-600 rounded"
+          disabled={isCreatingJob}
+          className="px-4 py-2 bg-blue-600 rounded text-white"
         >
-          Create Job
+          {isCreatingJob ? "Creating Job..." : "Create Job"}
         </button>
       )}
+
+      {/* ----------------------------- Upload Area ---------------------------- */}
 
       {jobId && (
         <>
@@ -63,27 +118,43 @@ export default function NewUploadPage() {
             <input
               type="file"
               multiple
-              accept=".pdf,.docx"
+              accept=".pdf,.doc,.docx"
               onChange={handleFileChange}
             />
 
             <button
               onClick={handleUpload}
-              disabled={isUploading}
-              className="px-4 py-2 bg-green-600 rounded"
+              disabled={isUploading || files.length === 0}
+              className="px-4 py-2 bg-green-600 rounded text-white"
             >
               {isUploading ? "Uploading..." : "Upload Resumes"}
             </button>
           </div>
 
-          {uploadedResumes.length > 0 && (
-            <div className="border p-4 rounded">
-              <h3 className="font-medium mb-2">Uploaded</h3>
+          {/* --------------------------- Uploaded List -------------------------- */}
 
-              {uploadedResumes.map((r, index) => (
-                <div key={index}>{r.resumeUrl}</div>
+          {hasUploadedResumes && (
+            <div className="border p-4 rounded">
+              <h3 className="font-medium mb-2">Uploaded Resumes</h3>
+
+              {uploadedResumes.map((resume) => (
+                <div key={resume.resumeObjectId}>{resume.resumeUrl}</div>
               ))}
             </div>
+          )}
+
+          {/* ---------------------------- Batch Action -------------------------- */}
+
+          {hasUploadedResumes && (
+            <button
+              onClick={handleCreateBatch}
+              disabled={isCreatingBatch}
+              className="px-4 py-2 rounded bg-indigo-600 text-white"
+            >
+              {isCreatingBatch
+                ? "Starting Processing..."
+                : "Create Processing Batch"}
+            </button>
           )}
         </>
       )}
