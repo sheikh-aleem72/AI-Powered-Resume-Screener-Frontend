@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useCreateJob } from "../../hooks/job/useCreateJob";
 import { useCreateBatch } from "../../hooks/batch/useCreateBatch";
 
-import { uploadResumes } from "../../api/resume";
+import ResumeUploader from "../../features/resume-upload/ResumeUploader";
 
 export default function NewUploadPage() {
   const navigate = useNavigate();
@@ -14,12 +14,12 @@ export default function NewUploadPage() {
     useCreateBatch();
 
   const [jobId, setJobId] = useState<string | null>(null);
-  const [files, setFiles] = useState<File[]>([]);
+
   const [uploadedResumes, setUploadedResumes] = useState<
     { resumeObjectId: string; resumeUrl: string }[]
   >([]);
+
   const [totalSize, setTotalSize] = useState<number>(0);
-  const [isUploading, setIsUploading] = useState(false);
 
   const hasUploadedResumes = uploadedResumes.length > 0;
 
@@ -38,38 +38,6 @@ export default function NewUploadPage() {
     });
 
     setJobId(job._id);
-  };
-
-  /* -------------------------------------------------------------------------- */
-  /*                              File Selection                                */
-  /* -------------------------------------------------------------------------- */
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = event.target.files;
-    if (!selected) return;
-
-    setFiles(Array.from(selected));
-  };
-
-  /* -------------------------------------------------------------------------- */
-  /*                               Upload Logic                                 */
-  /* -------------------------------------------------------------------------- */
-
-  const handleUpload = async () => {
-    if (files.length === 0) return;
-
-    setIsUploading(true);
-
-    try {
-      const { resumes, size } = await uploadResumes(files);
-
-      setUploadedResumes(resumes);
-      setTotalSize(size);
-    } catch (error) {
-      console.error("Resume upload failed", error);
-    } finally {
-      setIsUploading(false);
-    }
   };
 
   /* -------------------------------------------------------------------------- */
@@ -112,40 +80,17 @@ export default function NewUploadPage() {
 
       {jobId && (
         <>
-          <div className="border p-4 rounded space-y-4">
-            <h2 className="font-medium">Upload Resumes</h2>
-
-            <input
-              type="file"
-              multiple
-              accept=".pdf,.doc,.docx"
-              onChange={handleFileChange}
-            />
-
-            <button
-              onClick={handleUpload}
-              disabled={isUploading || files.length === 0}
-              className="px-4 py-2 bg-green-600 rounded text-white"
-            >
-              {isUploading ? "Uploading..." : "Upload Resumes"}
-            </button>
-          </div>
-
-          {/* --------------------------- Uploaded List -------------------------- */}
-
-          {hasUploadedResumes && (
-            <div className="border p-4 rounded">
-              <h3 className="font-medium mb-2">Uploaded Resumes</h3>
-
-              {uploadedResumes.map((resume) => (
-                <div key={resume.resumeObjectId}>{resume.resumeUrl}</div>
-              ))}
-            </div>
-          )}
+          <ResumeUploader
+            onUploadComplete={(resumes, size) => {
+              setUploadedResumes(resumes);
+              setTotalSize(size);
+            }}
+            onCreateBatch={handleCreateBatch}
+          />
 
           {/* ---------------------------- Batch Action -------------------------- */}
 
-          {hasUploadedResumes && (
+          {/* {hasUploadedResumes && (
             <button
               onClick={handleCreateBatch}
               disabled={isCreatingBatch}
@@ -155,7 +100,7 @@ export default function NewUploadPage() {
                 ? "Starting Processing..."
                 : "Create Processing Batch"}
             </button>
-          )}
+          )} */}
         </>
       )}
     </div>
