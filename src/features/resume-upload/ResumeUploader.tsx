@@ -35,6 +35,26 @@ export default function ResumeUploader({
   const allUploaded = totalFiles > 0 && remainingCount === 0;
 
   useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // condition when warning should trigger
+      const hasOngoingWork = isUploading || items.length > 0;
+
+      if (!hasOngoingWork) return;
+
+      e.preventDefault();
+
+      // Required for Chrome
+      e.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isUploading, items]);
+
+  useEffect(() => {
     const uploaded = items
       .filter((i) => i.status === "uploaded")
       .map((i) => ({
@@ -120,6 +140,102 @@ export default function ResumeUploader({
   /*                             Upload Files                                   */
   /* -------------------------------------------------------------------------- */
 
+  const uploadSingle = async (item: UploadFileItem, config: any) => {
+    // mark uploading
+    setItems((prev) =>
+      prev.map((i) =>
+        i.id === item.id ? { ...i, status: "uploading", progress: 0 } : i
+      )
+    );
+
+    try {
+      const url = await uploadApi.uploadFileToCloudinary(
+        item.file,
+        config,
+        (progress) => {
+          setItems((prev) => {
+            const updated = prev.map((i) =>
+              i.id === item.id ? { ...i, progress } : i
+            );
+
+            const active = updated.filter(
+              (i) => i.status === "uploading" || i.status === "queued"
+            );
+
+            const total = active.reduce((sum, i) => sum + i.progress, 0);
+            const avg = active.length ? total / active.length : 100;
+
+            setOverallProgress(Math.round(avg));
+
+            return updated;
+          });
+        }
+      );
+
+      // mark uploaded immediately
+      setItems((prev) =>
+        prev.map((i) =>
+          i.id === item.id
+            ? {
+                ...i,
+                status: "uploaded",
+                progress: 100,
+                resumeUrl: url,
+              }
+            : i
+        )
+      );
+
+      return {
+        filename: item.file.name,
+        size: item.file.size,
+        format: item.file.type,
+        url,
+        folder: config.folder,
+      };
+    } catch (err) {
+      setItems((prev) =>
+        prev.map((i) =>
+          i.id === item.id
+            ? { ...i, status: "failed", error: "Upload failed" }
+            : i
+        )
+      );
+
+      return null;
+    }
+  };
+
+  const MAX_CONCURRENT_UPLOADS = 4;
+
+  const processQueue = async (queued: UploadFileItem[], presigned: any[]) => {
+    const results: any[] = [];
+    let currentIndex = 0;
+
+    const worker = async () => {
+      while (currentIndex < queued.length) {
+        const index = currentIndex++;
+        const item = queued[index];
+        const config = presigned[index];
+
+        const result = await uploadSingle(item, config);
+
+        if (result) {
+          results.push(result);
+        }
+      }
+    };
+
+    // start workers
+    const workers = Array.from({ length: MAX_CONCURRENT_UPLOADS }, () =>
+      worker()
+    );
+
+    await Promise.all(workers);
+
+    return results;
+  };
+
   const startUpload = async () => {
     const queued = items.filter((i) => i.status === "queued");
 
@@ -133,72 +249,16 @@ export default function ResumeUploader({
       const fileNames = queued.map((i) => i.file.name);
       const presigned = await uploadApi.getPresignedUrls(fileNames);
 
-      const uploadedMeta = [];
-
-      /* ----------------------------- upload files ------------------------------ */
-
-      for (let index = 0; index < queued.length; index++) {
-        const item = queued[index];
-        const config = presigned[index];
-
-        /* mark uploading */
-
-        setItems((prev) =>
-          prev.map((i) =>
-            i.id === item.id ? { ...i, status: "uploading", progress: 0 } : i
-          )
-        );
-
-        try {
-          const url = await uploadApi.uploadFileToCloudinary(
-            item.file,
-            config,
-            (progress) => {
-              setItems((prev) => {
-                const updated = prev.map((i) =>
-                  i.id === item.id ? { ...i, progress } : i
-                );
-
-                const active = updated.filter(
-                  (i) => i.status === "uploading" || i.status === "queued"
-                );
-
-                const total = active.reduce((sum, i) => sum + i.progress, 0);
-                const avg = active.length ? total / active.length : 100;
-
-                setOverallProgress(Math.round(avg));
-
-                return updated;
-              });
-            }
-          );
-
-          uploadedMeta.push({
-            filename: item.file.name,
-            size: item.file.size,
-            format: item.file.type,
-            url,
-            folder: config.folder,
-          });
-        } catch (err) {
-          setItems((prev) =>
-            prev.map((i) =>
-              i.id === item.id
-                ? { ...i, status: "failed", error: "Upload failed" }
-                : i
-            )
-          );
-        }
-      }
+      const uploadedMeta = await processQueue(queued, presigned);
 
       /* --------------------------- save metadata batch ------------------------- */
 
       const savedResumes = await resumeApi.saveResumeMetaBatch(uploadedMeta);
 
-      const resumes = savedResumes.map((r) => ({
-        resumeObjectId: r._id,
-        resumeUrl: r.url,
-      }));
+      // const resumes = savedResumes.map((r) => ({
+      //   resumeObjectId: r._id,
+      //   resumeUrl: r.url,
+      // }));
 
       /* ----------------------------- update items ------------------------------ */
 
@@ -206,18 +266,16 @@ export default function ResumeUploader({
 
       setItems((prev) =>
         prev.map((item) => {
-          if (item.status !== "uploading") return item;
+          if (item.status !== "uploaded" || item.resumeObjectId) return item;
 
-          const result = resumes[resumeIndex++];
+          const result = savedResumes[resumeIndex++];
 
           if (!result) return item;
 
           return {
             ...item,
-            status: "uploaded",
-            progress: 100,
-            resumeUrl: result.resumeUrl,
-            resumeObjectId: result.resumeObjectId,
+            resumeObjectId: result._id,
+            resumeUrl: result.url,
           };
         })
       );
