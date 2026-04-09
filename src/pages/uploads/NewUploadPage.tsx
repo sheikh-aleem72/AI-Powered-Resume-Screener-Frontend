@@ -10,8 +10,7 @@ export default function NewUploadPage() {
   const navigate = useNavigate();
 
   const { mutateAsync: createJob, isPending: isCreatingJob } = useCreateJob();
-  const { mutateAsync: createBatch, isPending: isCreatingBatch } =
-    useCreateBatch();
+  const { mutateAsync: createBatch } = useCreateBatch();
 
   const [jobId, setJobId] = useState<string | null>(null);
 
