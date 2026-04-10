@@ -52,6 +52,12 @@ export const JobDetailPage = () => {
       {/* ====================== */}
       {/* Job Header Section */}
       {/* ====================== */}
+      <button
+        onClick={() => navigate(`/jobs`)}
+        className="text-sm text-muted hover:text-action-primary"
+      >
+        ← Back
+      </button>
       <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
         <div className="flex justify-between items-start">
           <div className="space-y-2">
