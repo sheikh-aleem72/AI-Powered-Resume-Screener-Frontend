@@ -4,6 +4,7 @@ import { useJobResumes } from "../../hooks/job/useJobResumes";
 import { useJobUpdates } from "../../hooks/job/useJobUpdates";
 import { ResumeTable } from "../../components/jobs/ResumeTable";
 import { useState, useEffect } from "react";
+import { useDeleteMutation } from "../../hooks/job/useDeleteJob";
 
 // ---------------------------------------------------------------------------
 // JobDetailPage
@@ -31,6 +32,7 @@ export const JobDetailPage = () => {
   const navigate = useNavigate();
   const { jobId } = useParams<{ jobId: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
+  const deleteMutation = useDeleteMutation();
 
   // Parse passFail filter from query string; only accept known values.
   const passFailParam = searchParams.get("passFail");
@@ -67,6 +69,19 @@ export const JobDetailPage = () => {
 
   const resumes = resumeResponse?.resumes ?? [];
   const total = resumeResponse?.total ?? 0;
+
+  // Handle delete job request
+  const handleDelete = (jobId: string) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this job?"
+    );
+
+    if (!confirmed) return;
+
+    deleteMutation.mutate(jobId);
+
+    navigate("/jobs");
+  };
 
   // -------------------------------------------------------------------------
   // Loading / error states
@@ -189,6 +204,18 @@ export const JobDetailPage = () => {
               {data.description}
             </p>
           </div>
+
+          {/* Delete button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(jobId!);
+            }}
+            disabled={deleteMutation.isPending}
+            className="text-red-500 hover:text-red-400"
+          >
+            {deleteMutation.isPending ? "Deleting..." : "Delete"}
+          </button>
         </div>
 
         {/* Divider */}

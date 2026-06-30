@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import type { Job } from "../../api/job";
+import { useDeleteMutation } from "../../hooks/job/useDeleteJob";
 
 interface Props {
   jobs: Job[];
@@ -7,6 +8,7 @@ interface Props {
 
 export const JobTable = ({ jobs }: Props) => {
   const navigate = useNavigate();
+  const deleteMutation = useDeleteMutation();
 
   if (jobs.length === 0) {
     return (
@@ -14,6 +16,15 @@ export const JobTable = ({ jobs }: Props) => {
     );
   }
 
+  const handleDelete = (jobId: string) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this job?"
+    );
+
+    if (!confirmed) return;
+
+    deleteMutation.mutate(jobId);
+  };
   return (
     <div className="overflow-x-auto rounded-lg border border-border">
       <table className="w-full text-sm">
@@ -24,6 +35,7 @@ export const JobTable = ({ jobs }: Props) => {
             <th className="px-4 py-3">Failed</th>
             <th className="px-4 py-3">Status</th>
             <th className="px-4 py-3">Last Updated</th>
+            <th className="px-4 py-3">Remove Job</th>
           </tr>
         </thead>
 
@@ -83,6 +95,19 @@ export const JobTable = ({ jobs }: Props) => {
 
                 <td className="px-4 py-3 text-muted-foreground">
                   {new Date(job.updatedAt).toLocaleString()}
+                </td>
+
+                <td className="px-4 py-3 text-muted-foreground">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(job._id);
+                    }}
+                    disabled={deleteMutation.isPending}
+                    className="text-red-500 hover:text-red-400"
+                  >
+                    {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                  </button>
                 </td>
               </tr>
             );

@@ -221,4 +221,8 @@ export const jobsApi = {
   createJob: (payload: createJobPayload) => {
     return httpClient.post(`/job/`, payload);
   },
+
+  deleteJob: (jobId: string) => {
+    return httpClient.delete(`/job/${jobId}`);
+  },
 };
