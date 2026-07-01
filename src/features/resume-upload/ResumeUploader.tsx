@@ -8,6 +8,8 @@ import type { UploadFileItem } from "./types";
 import { uploadApi } from "../../api/uploads";
 import { resumeApi } from "../../api/resume";
 
+const MAX_RESUMES_PER_BATCH = 50;
+
 interface Props {
   onUploadComplete: (
     resumes: { resumeObjectId: string; resumeUrl: string }[],
@@ -27,6 +29,8 @@ export default function ResumeUploader({
   const [items, setItems] = useState<UploadFileItem[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [overallProgress, setOverallProgress] = useState(0);
+  // Validation message shown above the upload queue.
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   // const uploadedItems = items.filter((i) => i.status === "uploaded");
   const totalFiles = items.length;
@@ -68,22 +72,59 @@ export default function ResumeUploader({
 
   const handleFiles = (files: File[]) => {
     setItems((prev) => {
+      // Clear any previous validation message.
+      setValidationError(null);
+
+      // -------------------------------------------------------
+      // Ignore duplicate selections.
+      // Duplicate = same filename + same file size.
+      // -------------------------------------------------------
       const existingKeys = new Set(
-        prev.map((i) => `${i.file.name}-${i.file.size}`)
+        prev.map((item) => `${item.file.name}-${item.file.size}`)
       );
-      const newItems: UploadFileItem[] = files
-        .filter((file) => !existingKeys.has(`${file.name}-${file.size}`))
-        .map((file) => ({
-          id: crypto.randomUUID(),
-          file,
-          progress: 0,
-          status: "queued",
-        }));
-      if (files.length - newItems.length > 0)
-        alert(
-          `${files.length - newItems.length} duplicate resume(s) were ignored`
+
+      const uniqueFiles = files.filter(
+        (file) => !existingKeys.has(`${file.name}-${file.size}`)
+      );
+
+      const duplicateCount = files.length - uniqueFiles.length;
+
+      if (duplicateCount > 0) {
+        setValidationError(
+          `${duplicateCount} duplicate resume${
+            duplicateCount > 1 ? "s were" : " was"
+          } ignored.`
         );
+      }
+
+      // -------------------------------------------------------
+      // Validate maximum resumes before uploading.
+      // -------------------------------------------------------
+      const availableSlots = MAX_RESUMES_PER_BATCH - prev.length;
+
+      if (uniqueFiles.length > availableSlots) {
+        setValidationError(
+          `Maximum ${MAX_RESUMES_PER_BATCH} resumes are allowed per batch. ` +
+            `You currently have ${prev.length} resume${
+              prev.length !== 1 ? "s" : ""
+            } selected, so only ${availableSlots} more can be added.`
+        );
+
+        return prev;
+      }
+
+      // -------------------------------------------------------
+      // Queue newly selected resumes.
+      // -------------------------------------------------------
+      const newItems: UploadFileItem[] = uniqueFiles.map((file) => ({
+        id: crypto.randomUUID(),
+        file,
+        progress: 0,
+        status: "queued",
+      }));
+
       setOverallProgress(0);
+
       return [...prev, ...newItems];
     });
   };
@@ -103,6 +144,7 @@ export default function ResumeUploader({
       onUploadComplete(uploaded, totalSize);
       return updated;
     });
+    setValidationError(null);
   };
 
   const retryUpload = (id: string) => {
@@ -217,7 +259,40 @@ export default function ResumeUploader({
   return (
     <div className="space-y-4">
       {/* Dropzone */}
-      <Dropzone onFilesSelected={handleFiles} />
+      <Dropzone
+        onFilesSelected={handleFiles}
+        disabled={items.length >= MAX_RESUMES_PER_BATCH}
+      />
+
+      {validationError && (
+        <div className="rounded-lg border border-state-warning/30 bg-state-warning/10 px-4 py-3">
+          <div className="flex items-start gap-3">
+            <svg
+              className="mt-0.5 h-5 w-5 shrink-0 text-state-warning"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v4m0 4h.01M10.29 3.86L1.82 18A2 2 0 003.53 21h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+              />
+            </svg>
+
+            <div>
+              <p className="text-sm font-medium text-state-warning">
+                Unable to add resumes
+              </p>
+
+              <p className="mt-1 text-sm text-muted-foreground">
+                {validationError}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Control panel — only shown once files are queued */}
       {items.length > 0 && (
