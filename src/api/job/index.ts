@@ -32,6 +32,7 @@ export interface Job {
   totalResumes: number;
   completedResumes: number;
   failedResumes: number;
+  status: string;
 }
 
 /**

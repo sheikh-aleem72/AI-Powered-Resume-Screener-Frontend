@@ -16,6 +16,10 @@ export const JobTable = ({ jobs }: Props) => {
     );
   }
 
+  /**
+   * Ask for confirmation before starting
+   * asynchronous job deletion.
+   */
   const handleDelete = (jobId: string) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this job?"
@@ -25,6 +29,7 @@ export const JobTable = ({ jobs }: Props) => {
 
     deleteMutation.mutate(jobId);
   };
+
   return (
     <div className="overflow-x-auto rounded-lg border border-border">
       <table className="w-full text-sm">
@@ -41,6 +46,12 @@ export const JobTable = ({ jobs }: Props) => {
 
         <tbody>
           {jobs.map((job) => {
+            // -------------------------------------------------------
+            // Derived state
+            // -------------------------------------------------------
+
+            const isDeleting = job.status === "deleting";
+
             const isComplete = job.completedResumes === job.totalResumes;
 
             const progressPercent =
@@ -48,15 +59,45 @@ export const JobTable = ({ jobs }: Props) => {
                 ? 0
                 : Math.round((job.completedResumes / job.totalResumes) * 100);
 
-            const statusLabel = isComplete ? "Completed" : "Processing";
+            // -------------------------------------------------------
+            // Status presentation
+            // -------------------------------------------------------
+
+            let statusLabel = "";
+            let statusClass = "";
+
+            if (isDeleting) {
+              statusLabel = "Deleting";
+              statusClass = "text-red-500";
+            } else if (isComplete) {
+              statusLabel = "Completed";
+              statusClass = "text-green-500";
+            } else {
+              statusLabel = "Processing";
+              statusClass = "text-yellow-500";
+            }
 
             return (
               <tr
                 key={job._id}
-                onClick={() => navigate(`/jobs/${job._id}`)}
-                className="cursor-pointer border-t border-border hover:bg-muted/50 transition"
+                onClick={() => {
+                  // Prevent opening a job while
+                  // it is being deleted.
+                  if (!isDeleting) {
+                    navigate(`/jobs/${job._id}`);
+                  }
+                }}
+                className={`border-t border-border transition ${
+                  isDeleting
+                    ? "cursor-not-allowed opacity-60"
+                    : "cursor-pointer hover:bg-muted/50"
+                }`}
               >
+                {/* ---------------- Title ---------------- */}
+
                 <td className="px-4 py-3 font-medium">{job.title}</td>
+
+                {/* ---------------- Progress ---------------- */}
 
                 <td className="px-4 py-3">
                   <div className="flex flex-col gap-1">
@@ -67,15 +108,19 @@ export const JobTable = ({ jobs }: Props) => {
                     <div className="h-2 w-full rounded bg-border">
                       <div
                         className="h-2 rounded bg-primary transition-all"
-                        style={{ width: `${progressPercent}%` }}
+                        style={{
+                          width: `${progressPercent}%`,
+                        }}
                       />
                     </div>
                   </div>
                 </td>
 
+                {/* ---------------- Failed ---------------- */}
+
                 <td className="px-4 py-3">
                   {job.failedResumes > 0 ? (
-                    <span className="text-red-500 font-medium">
+                    <span className="font-medium text-red-500">
                       {job.failedResumes}
                     </span>
                   ) : (
@@ -83,30 +128,32 @@ export const JobTable = ({ jobs }: Props) => {
                   )}
                 </td>
 
+                {/* ---------------- Status ---------------- */}
+
                 <td className="px-4 py-3">
-                  <span
-                    className={`text-xs font-medium ${
-                      isComplete ? "text-green-500" : "text-yellow-500"
-                    }`}
-                  >
+                  <span className={`text-xs font-medium ${statusClass}`}>
                     {statusLabel}
                   </span>
                 </td>
+
+                {/* ---------------- Updated ---------------- */}
 
                 <td className="px-4 py-3 text-muted-foreground">
                   {new Date(job.updatedAt).toLocaleString()}
                 </td>
 
-                <td className="px-4 py-3 text-muted-foreground">
+                {/* ---------------- Delete ---------------- */}
+
+                <td className="px-4 py-3">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDelete(job._id);
                     }}
-                    disabled={deleteMutation.isPending}
-                    className="text-red-500 hover:text-red-400"
+                    disabled={isDeleting}
+                    className="text-red-500 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                    {isDeleting ? "Deleting..." : "Delete"}
                   </button>
                 </td>
               </tr>
