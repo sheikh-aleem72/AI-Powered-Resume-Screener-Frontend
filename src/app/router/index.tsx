@@ -13,8 +13,10 @@ import { JobDetailPage } from "../../pages/jobs/JobDetailPage";
 import { ResumeDetailPage } from "../../pages/resume/ResumeDetailPage";
 import NewUploadPage from "../../pages/uploads/NewUploadPage";
 import JobCreatePage from "../../pages/jobs/JobCreatePage";
+import MarketingHomePage from "../../pages/marketing/MarketingHomePage";
 
 export const router = createBrowserRouter([
+  { path: "/", element: <MarketingHomePage /> },
   {
     element: <AuthLayout />,
     children: [
