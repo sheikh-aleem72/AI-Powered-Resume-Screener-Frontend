@@ -21,3 +21,39 @@
   --color-state-error: #ef4444;
   --color-state-info: #38bdf8;
 }
+
+/* ========================================================================== */
+/*                                Global Scrollbar                            */
+/* ========================================================================== */
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-default);
+  border-radius: 9999px;
+  border: 2px solid var(--color-bg-secondary);
+  transition: background-color 0.2s ease;
+  opacity: 0.8;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--color-bg-secondary);
+}
+
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-default) var(--color-bg-secondary);
+}
