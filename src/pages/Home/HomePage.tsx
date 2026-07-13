@@ -1,25 +1,42 @@
-import React from "react";
+import { EmptyWorkspace } from "../../features/home/components/EmptyWorkspace";
+import { HomeError } from "../../features/home/components/HomeError";
+import { HomeHeader } from "../../features/home/components/HomeHeader";
+import { HomeLoading } from "../../features/home/components/HomeLoading";
+import { QuickTips } from "../../features/home/components/QuickTips";
+import { RecentJobs } from "../../features/home/components/RecentJobs";
+import { WorkspaceSummary } from "../../features/home/components/WorkspaceSummary";
+import { useWorkspaceSummary } from "../../hooks/home/useWorkspaceSummary";
+import { useJobs } from "../../hooks/job/useJobs";
+import { tokenUtils } from "../../utils/tokenUtils";
 
-const HomePage: React.FC = () => {
+export const HomePage = () => {
+  const { data: jobs = [], isLoading, isError, refetch } = useJobs();
+
+  const { summary, recentJobs, hasJobs } = useWorkspaceSummary(jobs);
+
+  const user = tokenUtils.getUser();
+
+  if (isLoading) {
+    return <HomeLoading />;
+  }
+
+  if (isError) {
+    return <HomeError onRetry={() => refetch()} />;
+  }
+
+  if (!hasJobs) {
+    return <EmptyWorkspace />;
+  }
+
   return (
-    <div className="h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Ambient glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.08),transparent_60%)]" />
+    <div className="space-y-10 p-4 bg-bg-primary/60">
+      <HomeHeader recruiterName={user?.name} />
 
-      <div className="relative w-full max-w-2xl px-4">
-        <div className="bg-bg-surface/80 backdrop-blur-xl rounded-xl p-8 border border-border-subtle shadow-lg text-center">
-          {/* Header */}
-          <h1 className="text-3xl font-semibold text-text-primary mb-4">
-            Welcome Home
-          </h1>
-          <p className="text-lg text-text-muted">
-            This is the starting point of your AI-Powered Resume Scanner.
-            Explore and get started!
-          </p>
-        </div>
-      </div>
+      <WorkspaceSummary summary={summary} />
+
+      <RecentJobs jobs={recentJobs} />
+
+      <QuickTips />
     </div>
   );
 };
-
-export default HomePage;
