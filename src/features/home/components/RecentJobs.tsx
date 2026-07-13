@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { RecentJobCard } from "./RecentJobCard";
-import { type RecentJobCardProps } from "../../../types/workspaceSummary";
+import { type RecentJobCardProps } from "../types";
 
 interface RecentJobsProps {
   jobs: RecentJobCardProps[];

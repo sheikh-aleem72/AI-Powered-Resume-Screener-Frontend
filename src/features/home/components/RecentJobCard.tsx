@@ -8,7 +8,7 @@ import {
   Users,
 } from "lucide-react";
 
-import { type RecentJobCardProps } from "../../../types/workspaceSummary";
+import { type RecentJobCardProps } from "../types";
 
 const STATUS = {
   completed: {

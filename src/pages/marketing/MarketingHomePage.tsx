@@ -7,7 +7,7 @@ import { HeroSection } from "../../features/marketing/components/HeroSection";
 import { HowItWorksSection } from "../../features/marketing/components/HowItWorksSection";
 import { MarketingFooter } from "../../features/marketing/components/MarketingFooter";
 import { MarketingHeader } from "../../features/marketing/components/MarketingHeader";
-import { tokenUtils } from "../../utils/tokenUtils";
+import { tokenUtils } from "../../features/auth/utils/tokenUtils";
 
 export default function MarketingHomePage() {
   if (tokenUtils.isAuthenticated()) {

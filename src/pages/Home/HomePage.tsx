@@ -5,9 +5,9 @@ import { HomeLoading } from "../../features/home/components/HomeLoading";
 import { QuickTips } from "../../features/home/components/QuickTips";
 import { RecentJobs } from "../../features/home/components/RecentJobs";
 import { WorkspaceSummary } from "../../features/home/components/WorkspaceSummary";
-import { useWorkspaceSummary } from "../../hooks/home/useWorkspaceSummary";
-import { useJobs } from "../../hooks/job/useJobs";
-import { tokenUtils } from "../../utils/tokenUtils";
+import { useWorkspaceSummary } from "../../features/home/hooks/useWorkspaceSummary";
+import { useJobs } from "../../features/jobs/hooks/useJobs";
+import { tokenUtils } from "../../features/auth/utils/tokenUtils";
 
 export const HomePage = () => {
   const { data: jobs = [], isLoading, isError, refetch } = useJobs();

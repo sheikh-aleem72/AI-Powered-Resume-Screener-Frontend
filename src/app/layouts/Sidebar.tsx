@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import logoIcon from "../../assets/logo-icon.png";
-import { tokenUtils } from "../../utils/tokenUtils";
+import { tokenUtils } from "../../features/auth/utils/tokenUtils";
 
 // ---------------------------------------------------------------------------
 // Sidebar

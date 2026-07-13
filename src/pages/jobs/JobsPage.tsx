@@ -1,5 +1,5 @@
-import { JobTable } from "../../components/jobs/JobTable";
-import { useJobs } from "../../hooks/job/useJobs";
+import { JobTable } from "../../features/jobs/components/JobTable";
+import { useJobs } from "../../features/jobs/hooks/useJobs";
 
 export const JobsPage = () => {
   const { data, isLoading, isError, error } = useJobs();

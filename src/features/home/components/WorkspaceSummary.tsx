@@ -1,7 +1,7 @@
 import { BriefcaseBusiness, CircleCheckBig, Clock3, Users } from "lucide-react";
 
 import { SummaryCard } from "./SummaryCard";
-import type { WorkspaceSummary as WorkspaceSummaryData } from "../../../types/workspaceSummary";
+import type { WorkspaceSummary as WorkspaceSummaryData } from "../types";
 
 interface WorkspaceSummaryProps {
   summary: WorkspaceSummaryData;

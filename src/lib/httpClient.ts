@@ -1,4 +1,4 @@
-import { tokenUtils } from "../utils/tokenUtils";
+import { tokenUtils } from "../features/auth/utils/tokenUtils";
 
 const API_BASE = import.meta.env.VITE_BACKEND_API_URL;
 

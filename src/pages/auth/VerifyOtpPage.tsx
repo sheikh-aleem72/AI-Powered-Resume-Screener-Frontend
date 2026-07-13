@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { authApi } from "../../api/auth";
-import { tokenUtils } from "../../utils/tokenUtils";
+import { authApi } from "../../features/auth/api";
+import { tokenUtils } from "../../features/auth/utils/tokenUtils";
 
 /**
  * Verify OTP page

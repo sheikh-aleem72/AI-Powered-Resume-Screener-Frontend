@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { authApi } from "../../api/auth";
-import { tokenUtils } from "../../utils/tokenUtils";
+import { authApi } from "../../features/auth/api";
+import { tokenUtils } from "../../features/auth/utils/tokenUtils";
 
 /**
  * Field-level error mapping.

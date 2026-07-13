@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { tokenUtils } from "../../utils/tokenUtils";
+import { tokenUtils } from "../../features/auth/utils/tokenUtils";
 
 export default function Header() {
   const navigate = useNavigate();
