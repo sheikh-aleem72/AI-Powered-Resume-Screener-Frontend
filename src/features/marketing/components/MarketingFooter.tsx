@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logoIcon from "../../../assets/logo-icon.png";
+import logoIcon from "../../../assets/logo.png";
 
 const footerLinks = [
   { href: "#features", label: "Features" },
@@ -24,8 +24,8 @@ export function MarketingFooter() {
             </span>
           </Link>
           <p className="mt-4 text-sm leading-6 text-text-muted">
-            AI-powered resume screening for recruiters who need faster,
-            clearer, and more consistent shortlists.
+            AI-powered resume screening for recruiters who need faster, clearer,
+            and more consistent shortlists.
           </p>
         </div>
 

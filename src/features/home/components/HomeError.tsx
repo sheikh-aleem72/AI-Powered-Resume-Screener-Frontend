@@ -6,30 +6,96 @@ interface HomeErrorProps {
 
 export const HomeError = ({ onRetry }: HomeErrorProps) => {
   return (
-    <section className="flex min-h-[60vh] items-center justify-center">
-      <div className="w-full max-w-lg rounded-2xl border border-base-300 bg-base-100 p-8 text-center shadow-sm">
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-error/10">
-          <TriangleAlert className="h-10 w-10 text-error" />
+    <main className="relative flex min-h-[calc(100vh-8rem)] items-center justify-center px-8">
+      {/* Background Glow */}
+      <div className="pointer-events-none absolute inset-0">
+        <div
+          className="
+            absolute
+            left-1/2
+            top-1/2
+            h-112.5
+            w-112.5
+            -translate-x-1/2
+            -translate-y-1/2
+            rounded-full
+            bg-state-error/5
+            blur-[140px]
+          "
+        />
+      </div>
+
+      <section
+        className="
+          relative
+          w-full
+          max-w-2xl
+          rounded-[28px]
+          border
+          border-border-default
+          bg-bg-secondary
+          p-12
+          text-center
+        "
+      >
+        {/* Icon */}
+        <div
+          className="
+            mx-auto
+            flex
+            h-20
+            w-20
+            items-center
+            justify-center
+            rounded-2xl
+            bg-state-error/10
+            text-state-error
+          "
+        >
+          <TriangleAlert className="h-10 w-10" />
         </div>
 
-        <h1 className="mt-6 text-2xl font-bold text-base-content">
-          Something went wrong
-        </h1>
-
-        <p className="mt-3 text-base leading-7 text-base-content/70">
-          We couldn't load your workspace right now. Please try again in a
-          moment.
+        {/* Badge */}
+        <p className="mt-8 text-xs font-semibold uppercase tracking-[0.2em] text-state-error">
+          Workspace Error
         </p>
 
+        {/* Heading */}
+        <h1 className="mt-3 text-4xl font-bold text-text-primary">
+          Unable to load your workspace
+        </h1>
+
+        {/* Description */}
+        <p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-text-secondary">
+          We couldn't retrieve your latest hiring activity. This is usually
+          temporary. Please try loading the page again.
+        </p>
+
+        {/* Button */}
         <button
-          type="button"
           onClick={onRetry}
-          className="btn btn-primary mt-8"
+          className="
+            mt-10
+            inline-flex
+            items-center
+            justify-center
+            gap-3
+            rounded-xl
+            bg-action-primary
+            px-6
+            py-3
+            font-semibold
+            text-white
+            transition-all
+            duration-200
+            hover:bg-action-primary-hover
+            hover:shadow-[0_0_20px_rgba(59,130,246,0.25)]
+          "
         >
           <RefreshCcw className="h-5 w-5" />
-          Try Again
+          Retry Loading
         </button>
-      </div>
-    </section>
+      </section>
+    </main>
   );
 };
