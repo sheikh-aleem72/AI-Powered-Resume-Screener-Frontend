@@ -130,17 +130,18 @@ export default function Sidebar() {
           label="Guide"
           icon={
             <svg
-              className="w-4 h-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="15"
+              height="15"
               fill="none"
-              viewBox="0 0 20 20"
               stroke="currentColor"
-              strokeWidth="1.75"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M2 10h3l2-6 4 12 2-6h5"
-              />
+              <path d="M2 6.5A2.5 2.5 0 0 1 4.5 4H10v16H4.5A2.5 2.5 0 0 0 2 22z" />
+              <path d="M22 6.5A2.5 2.5 0 0 0 19.5 4H14v16h5.5A2.5 2.5 0 0 1 22 22z" />
             </svg>
           }
         />
