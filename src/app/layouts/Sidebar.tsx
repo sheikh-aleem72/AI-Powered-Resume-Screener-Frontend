@@ -126,8 +126,8 @@ export default function Sidebar() {
         />
 
         <NavItem
-          to="/activity"
-          label="Activity"
+          to="/guide"
+          label="Guide"
           icon={
             <svg
               className="w-4 h-4"

@@ -14,6 +14,7 @@ import { ResumeDetailPage } from "../../pages/resume/ResumeDetailPage";
 import NewUploadPage from "../../pages/uploads/NewUploadPage";
 import JobCreatePage from "../../pages/jobs/JobCreatePage";
 import MarketingHomePage from "../../pages/marketing/MarketingHomePage";
+import { GuidePage } from "../../pages/guide/GuidePage";
 
 export const router = createBrowserRouter([
   { path: "/", element: <MarketingHomePage /> },
@@ -33,6 +34,7 @@ export const router = createBrowserRouter([
         element: <AppLayout />,
         children: [
           { path: "/home", element: <HomePage /> },
+          { path: "/guide", element: <GuidePage /> },
           { path: "/jobs", element: <JobsPage /> },
           { path: "/jobs/:jobId", element: <JobDetailPage /> },
           { path: "/jobs/new", element: <JobCreatePage /> },
