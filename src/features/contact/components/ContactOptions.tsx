@@ -9,8 +9,8 @@ const contactOptions = [
     title: "Email",
     description:
       "Have a question, found a bug, or want to share feedback? Email is the best way to reach me.",
-    value: "your-email@example.com",
-    href: "mailto:your-email@example.com",
+    value: "sheikhaleem363@gmail.com",
+    href: "mailto:sheikhaleem363@gmail.com",
     action: "Send Email",
     featured: true,
   },
@@ -19,8 +19,8 @@ const contactOptions = [
     title: "GitHub",
     description:
       "Explore the ClearHire source code, follow development progress, and view other projects.",
-    value: "github.com/yourusername",
-    href: "https://github.com/yourusername",
+    value: "github.com/sheikh-aleem72",
+    href: "https://github.com/sheikh-aleem72",
     action: "View GitHub",
     featured: false,
   },
@@ -29,8 +29,8 @@ const contactOptions = [
     title: "LinkedIn",
     description:
       "Let's connect professionally and discuss opportunities, ideas, or collaboration.",
-    value: "linkedin.com/in/yourusername",
-    href: "https://linkedin.com/in/yourusername",
+    value: "linkedin.com/in/shekh-aalim-467b25240",
+    href: "https://www.linkedin.com/in/shekh-aalim-467b25240/",
     action: "Connect",
     featured: false,
   },
