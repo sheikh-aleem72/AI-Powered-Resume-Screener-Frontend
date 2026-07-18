@@ -54,7 +54,7 @@ export const VerifyOtpPage: React.FC = () => {
        * Replace history so browser back button
        * can never return to OTP page after success
        */
-      navigate("/home", { replace: true });
+      navigate("/guide", { replace: true });
     },
     onError: (error: Error) => {
       console.log("Error: ", error.message);
@@ -118,7 +118,7 @@ export const VerifyOtpPage: React.FC = () => {
    * they should never see verify OTP again.
    */
   if (accessToken && refreshToken) {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/guide" replace />;
   }
 
   return (

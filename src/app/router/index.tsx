@@ -4,7 +4,7 @@ import NotFoundPage from "../../pages/NotFoundPage";
 import AppLayout from "../layouts/AppLayout";
 import { SignupPage } from "../../pages/auth/SignUpPage";
 import { VerifyOtpPage } from "../../pages/auth/VerifyOtpPage";
-import { HomePage } from "../../pages/Home/HomePage";
+import { HomePage } from "../../pages/home/HomePage";
 import ProtectedRoute from "../layouts/ProtectedRoute";
 import { SignInPage } from "../../pages/auth/SignInPage";
 import { ForgetPasswordPage } from "../../pages/auth/ForgetPasswordPage";
@@ -15,6 +15,7 @@ import NewUploadPage from "../../pages/uploads/NewUploadPage";
 import JobCreatePage from "../../pages/jobs/JobCreatePage";
 import MarketingHomePage from "../../pages/marketing/MarketingHomePage";
 import { GuidePage } from "../../pages/guide/GuidePage";
+import { ContactPage } from "../../pages/contact/ContactPage";
 
 export const router = createBrowserRouter([
   { path: "/", element: <MarketingHomePage /> },
@@ -35,6 +36,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "/home", element: <HomePage /> },
           { path: "/guide", element: <GuidePage /> },
+          { path: "/contact", element: <ContactPage /> },
           { path: "/jobs", element: <JobsPage /> },
           { path: "/jobs/:jobId", element: <JobDetailPage /> },
           { path: "/jobs/new", element: <JobCreatePage /> },
