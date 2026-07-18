@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useCreateBatch } from "../../hooks/batch/useCreateBatch";
-import ResumeUploader from "../../features/resume-upload/ResumeUploader";
+import { useCreateBatch } from "../../features/uploads/hooks/useCreateBatch";
+import ResumeUploader from "../../features/uploads/components/ResumeUploader";
 
 export default function NewUploadPage() {
   const navigate = useNavigate();

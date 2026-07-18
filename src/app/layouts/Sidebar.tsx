@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import logoIcon from "../../assets/logo-icon.png";
-import { tokenUtils } from "../../utils/tokenUtils";
+import logoIcon from "../../assets/logo.png";
+import { tokenUtils } from "../../features/auth/utils/tokenUtils";
 
 // ---------------------------------------------------------------------------
 // Sidebar
@@ -126,21 +126,38 @@ export default function Sidebar() {
         />
 
         <NavItem
-          to="/activity"
-          label="Activity"
+          to="/guide"
+          label="Guide"
           icon={
             <svg
-              className="w-4 h-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="15"
+              height="15"
               fill="none"
-              viewBox="0 0 20 20"
               stroke="currentColor"
-              strokeWidth="1.75"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M2 10h3l2-6 4 12 2-6h5"
-              />
+              <path d="M2 6.5A2.5 2.5 0 0 1 4.5 4H10v16H4.5A2.5 2.5 0 0 0 2 22z" />
+              <path d="M22 6.5A2.5 2.5 0 0 0 19.5 4H14v16h5.5A2.5 2.5 0 0 1 22 22z" />
+            </svg>
+          }
+        />
+
+        <NavItem
+          to="/contact"
+          label="Contact Us"
+          icon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
             </svg>
           }
         />

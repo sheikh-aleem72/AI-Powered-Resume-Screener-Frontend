@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { tokenUtils } from "../../utils/tokenUtils";
+import { tokenUtils } from "../../features/auth/utils/tokenUtils";
 
 const ProtectedRoute = () => {
   const accessToken = tokenUtils.getAccessToken();

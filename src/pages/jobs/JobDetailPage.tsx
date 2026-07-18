@@ -1,10 +1,10 @@
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useJob } from "../../hooks/job/useJob";
-import { useJobResumes } from "../../hooks/job/useJobResumes";
-import { useJobUpdates } from "../../hooks/job/useJobUpdates";
-import { ResumeTable } from "../../components/jobs/ResumeTable";
+import { useJob } from "../../features/jobs/hooks/useJob";
+import { useJobResumes } from "../../features/jobs/hooks/useJobResumes";
+import { useJobUpdates } from "../../features/jobs/hooks/useJobUpdates";
+import { ResumeTable } from "../../features/jobs/components/ResumeTable";
 import { useState, useEffect } from "react";
-import { useDeleteMutation } from "../../hooks/job/useDeleteJob";
+import { useDeleteMutation } from "../../features/jobs/hooks/useDeleteJob";
 
 // ---------------------------------------------------------------------------
 // JobDetailPage

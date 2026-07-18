@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useResumeProcessing } from "../../hooks/resume/useResumeProcessing";
-import { useRunDeepAnalysis } from "../../hooks/resume/useRunDeepAnalysis";
+import { useResumeProcessing } from "../../features/resume/hooks/useResumeProcessing";
+import { useRunDeepAnalysis } from "../../features/resume/hooks/useRunDeepAnalysis";
 
 export const ResumeDetailPage = () => {
   const { jobId, resumeId } = useParams();
