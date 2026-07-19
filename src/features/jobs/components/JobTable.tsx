@@ -1,6 +1,10 @@
+import { Trash2, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
 import type { Job } from "../api";
 import { useDeleteMutation } from "../hooks/useDeleteJob";
+import { StatusBadge } from "./StatusBadge";
+import { formatRelativeTime } from "../../../utils/formatRelativeTime";
 
 interface Props {
   jobs: Job[];
@@ -12,155 +16,240 @@ export const JobTable = ({ jobs }: Props) => {
 
   if (jobs.length === 0) {
     return (
-      <div className="text-sm text-muted-foreground">No jobs created yet.</div>
+      <div className="rounded-3xl border border-border-default bg-bg-secondary p-12 text-center">
+        <h3 className="text-2xl font-bold text-text-primary">
+          No hiring pipelines yet
+        </h3>
+
+        <p className="mt-3 text-text-secondary">
+          Create your first job to begin screening resumes.
+        </p>
+      </div>
     );
   }
 
-  /**
-   * Ask for confirmation before starting
-   * asynchronous job deletion.
-   */
   const handleDelete = (jobId: string) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this job?"
-    );
-
-    if (!confirmed) return;
+    if (!window.confirm("Delete this hiring pipeline?")) return;
 
     deleteMutation.mutate(jobId);
   };
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-border">
-      <table className="w-full text-sm">
-        <thead className="bg-muted">
-          <tr className="text-left">
-            <th className="px-4 py-3">Title</th>
-            <th className="px-4 py-3">Progress</th>
-            <th className="px-4 py-3">Failed</th>
-            <th className="px-4 py-3">Status</th>
-            <th className="px-4 py-3">Last Updated</th>
-            <th className="px-4 py-3">Remove Job</th>
-          </tr>
-        </thead>
+    <section className="space-y-6">
+      {/* Heading */}
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-action-primary">
+          Jobs
+        </p>
 
-        <tbody>
-          {jobs.map((job) => {
-            // -------------------------------------------------------
-            // Derived state
-            // -------------------------------------------------------
+        <h2 className="mt-2 text-3xl font-bold text-text-primary">
+          Hiring Pipelines
+        </h2>
 
-            const isDeleting = job.status === "deleting";
+        <p className="mt-2 text-text-secondary">
+          Open a pipeline to review candidates, monitor progress, or manage
+          recruitment.
+        </p>
+      </div>
 
-            const isComplete = job.completedResumes === job.totalResumes;
+      {/* Card */}
 
-            const progressPercent =
-              job.totalResumes === 0
-                ? 0
-                : Math.round((job.completedResumes / job.totalResumes) * 100);
-
-            // -------------------------------------------------------
-            // Status presentation
-            // -------------------------------------------------------
-
-            let statusLabel = "";
-            let statusClass = "";
-
-            if (isDeleting) {
-              statusLabel = "Deleting";
-              statusClass = "text-red-500";
-            } else if (isComplete) {
-              statusLabel = "Completed";
-              statusClass = "text-green-500";
-            } else {
-              statusLabel = "Processing";
-              statusClass = "text-yellow-500";
-            }
-
-            return (
-              <tr
-                key={job._id}
-                onClick={() => {
-                  // Prevent opening a job while
-                  // it is being deleted.
-                  if (!isDeleting) {
-                    navigate(`/jobs/${job._id}`);
-                  }
-                }}
-                className={`border-t border-border transition ${
-                  isDeleting
-                    ? "cursor-not-allowed opacity-60"
-                    : "cursor-pointer hover:bg-muted/50"
-                }`}
-              >
-                {/* ---------------- Title ---------------- */}
-
-                <td className="px-4 py-3 font-medium">{job.title}</td>
-
-                {/* ---------------- Progress ---------------- */}
-
-                <td className="px-4 py-3">
-                  <div className="flex flex-col gap-1">
-                    <span>
-                      {job.completedResumes} / {job.totalResumes}
-                    </span>
-
-                    <div className="h-2 w-full rounded bg-border">
-                      <div
-                        className="h-2 rounded bg-primary transition-all"
-                        style={{
-                          width: `${progressPercent}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                </td>
-
-                {/* ---------------- Failed ---------------- */}
-
-                <td className="px-4 py-3">
-                  {job.failedResumes > 0 ? (
-                    <span className="font-medium text-red-500">
-                      {job.failedResumes}
-                    </span>
-                  ) : (
-                    <span className="text-muted-foreground">0</span>
-                  )}
-                </td>
-
-                {/* ---------------- Status ---------------- */}
-
-                <td className="px-4 py-3">
-                  <span className={`text-xs font-medium ${statusClass}`}>
-                    {statusLabel}
-                  </span>
-                </td>
-
-                {/* ---------------- Updated ---------------- */}
-
-                <td className="px-4 py-3 text-muted-foreground">
-                  {new Date(job.updatedAt).toLocaleString()}
-                </td>
-
-                {/* ---------------- Delete ---------------- */}
-
-                <td className="px-4 py-3">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(job._id);
-                    }}
-                    disabled={isDeleting}
-                    className="text-red-500 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {isDeleting ? "Deleting..." : "Delete"}
-                  </button>
-                </td>
+      <div className="overflow-hidden rounded-3xl border border-border-default bg-bg-secondary">
+        <div className="overflow-x-auto">
+          <table className="min-w-full">
+            <thead className="border-b border-border-subtle bg-bg-primary">
+              <tr className="text-left text-sm font-semibold text-text-secondary">
+                <th className="px-6 py-5">Job</th>
+                <th className="px-6 py-5">Progress</th>
+                <th className="px-6 py-5">Candidates</th>
+                <th className="px-6 py-5">Status</th>
+                <th className="px-6 py-5">Updated</th>
+                <th className="px-6 py-5 text-center">Actions</th>
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+            </thead>
+
+            <tbody>
+              {jobs.map((job) => {
+                const deleting = job.status === "deleting";
+
+                const completed =
+                  job.completedResumes === job.totalResumes && !deleting;
+
+                const status = deleting
+                  ? "deleting"
+                  : completed
+                    ? "completed"
+                    : "processing";
+
+                const progress =
+                  job.totalResumes === 0
+                    ? 0
+                    : Math.round(
+                        (job.completedResumes / job.totalResumes) * 100
+                      );
+
+                const formattedDate = new Intl.DateTimeFormat("en", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                }).format(new Date(job.updatedAt));
+
+                const relativeTime = formatRelativeTime(job.updatedAt);
+
+                return (
+                  <tr
+                    key={job._id}
+                    onClick={() => !deleting && navigate(`/jobs/${job._id}`)}
+                    className={`
+                      border-b
+                      border-border-subtle
+                      transition-colors
+                      ${
+                        deleting
+                          ? "opacity-60"
+                          : "cursor-pointer hover:bg-white/3"
+                      }
+                    `}
+                  >
+                    {/* Job */}
+
+                    <td className="px-6 py-5">
+                      <div>
+                        <h3 className="font-semibold text-text-primary">
+                          {job.title}
+                        </h3>
+
+                        <p className="mt-1 text-sm text-text-secondary">
+                          Created{" "}
+                          {new Intl.DateTimeFormat("en", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          }).format(new Date(job.createdAt))}
+                        </p>
+                      </div>
+                    </td>
+
+                    {/* Progress */}
+
+                    <td className="px-6 py-5">
+                      <div className="w-52">
+                        <p className="mb-2 text-sm font-medium text-text-primary">
+                          {job.completedResumes} / {job.totalResumes} completed
+                        </p>
+
+                        <div className="h-3 overflow-hidden rounded-full bg-gray-400">
+                          <div
+                            className={`
+                            h-full
+                            rounded-full
+                            transition-all
+                            duration-700
+                            ${
+                              status === "completed"
+                                ? "bg-emerald-500"
+                                : "bg-action-primary animate-pulse"
+                            }
+                           `}
+                            style={{
+                              width: `${progress}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Candidates */}
+
+                    <td className="px-6 py-5">
+                      <div className="space-y-1 text-sm">
+                        <p className="font-medium text-text-primary">
+                          {job.totalResumes} Total
+                        </p>
+
+                        <p className="text-red-400">
+                          {job.failedResumes} Failed
+                        </p>
+                      </div>
+                    </td>
+
+                    {/* Status */}
+
+                    <td className="px-6 py-5">
+                      <StatusBadge status={status} />
+                    </td>
+
+                    {/* Updated */}
+
+                    <td className="px-6 py-5 text-sm text-text-secondary">
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-text-primary">
+                          {formattedDate}
+                        </p>
+
+                        <p className="text-xs text-text-secondary">
+                          {relativeTime}
+                        </p>
+                      </div>
+                    </td>
+
+                    {/* Actions */}
+
+                    <td className="px-6 py-5">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+
+                            if (!deleting) navigate(`/jobs/${job._id}`);
+                          }}
+                          className="
+                            inline-flex
+                            items-center
+                            gap-2
+                            rounded-xl
+                            bg-action-primary/10
+                            px-4
+                            py-2
+                            text-sm
+                            font-semibold
+                            text-action-primary
+                            transition-all
+                            duration-200
+                            hover:bg-action-primary
+                            hover:text-white
+                          "
+                        >
+                          Open
+                          <ArrowRight className="h-4 w-4" />
+                        </button>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(job._id);
+                          }}
+                          disabled={deleting}
+                          className="
+                            rounded-xl
+                            p-2
+                            text-red-400
+                            transition
+                            hover:bg-red-500/10
+                            disabled:opacity-40
+                          "
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
   );
 };
