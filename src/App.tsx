@@ -9,7 +9,7 @@ function App() {
     <>
       <QueryProvider>
         <ErrorBoundary>
-          <Toaster position="top-right" richColors theme="dark" closeButton />;
+          <Toaster position="top-right" richColors theme="dark" closeButton />
           <RouterProvider router={router} />
         </ErrorBoundary>
       </QueryProvider>
