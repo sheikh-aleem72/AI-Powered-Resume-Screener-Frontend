@@ -51,6 +51,8 @@ export interface JobDetail {
 
   createdAt: string;
   updatedAt: string;
+
+  location: string;
 }
 
 /**
