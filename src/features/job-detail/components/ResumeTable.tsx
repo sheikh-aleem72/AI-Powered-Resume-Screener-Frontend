@@ -28,11 +28,23 @@ export const ResumeTable = ({ resumes }: Props) => {
 
   return (
     <div className="overflow-hidden rounded-3xl border border-border-default bg-bg-secondary">
-      <div className="overflow-x-auto">
+      <div className=" max-h-[80vh] overflow-auto">
         <table className="w-full border-collapse">
           {/* ---------------- Header ---------------- */}
 
-          <thead className="border-b border-border-subtle bg-bg-primary">
+          <thead
+            className="
+          sticky
+          top-0
+          z-10
+          border-b
+          border-border-subtle
+          bg-bg-primary
+          shadow-sm
+              
+
+        "
+          >
             <tr className="text-left text-sm font-semibold text-text-secondary">
               <th className="w-24 px-6 py-5 text-center">Rank</th>
 
