@@ -95,6 +95,7 @@ export interface ResumeProcessing {
 
   createdAt: string;
   updatedAt: string;
+  location: string;
 }
 
 /**

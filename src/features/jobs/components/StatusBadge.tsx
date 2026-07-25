@@ -1,5 +1,5 @@
 interface StatusBadgeProps {
-  status: "processing" | "completed" | "deleting";
+  status: "processing" | "completed" | "deleting" | "failed";
 }
 
 export const StatusBadge = ({ status }: StatusBadgeProps) => {
@@ -8,12 +8,14 @@ export const StatusBadge = ({ status }: StatusBadgeProps) => {
     completed:
       "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
     deleting: "bg-red-500/10 text-red-400 border border-red-500/20",
+    failed: "bg-red-500/10 text-red-400 border border-red-500/20",
   };
 
   const labels = {
     processing: "Processing",
     completed: "Completed",
     deleting: "Deleting",
+    failed: "Failed",
   };
 
   return (
