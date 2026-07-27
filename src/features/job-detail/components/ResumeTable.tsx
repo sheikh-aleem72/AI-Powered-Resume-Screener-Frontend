@@ -87,6 +87,7 @@ export const ResumeTable = ({ resumes }: Props) => {
                     border-border-subtle
                     transition-colors
                     hover:bg-bg-primary
+                    
                   "
                 >
                   {/* ---------------- Rank ---------------- */}
@@ -100,7 +101,7 @@ export const ResumeTable = ({ resumes }: Props) => {
 
                   {/* ---------------- Candidate ---------------- */}
 
-                  <td className="px-6 py-5 align-top">
+                  <td className="px-6 py-5 align-center">
                     <div className="space-y-1">
                       <p className="font-semibold text-text-primary">
                         {r.externalResumeId}

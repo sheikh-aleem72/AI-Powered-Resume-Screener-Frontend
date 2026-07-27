@@ -20,113 +20,168 @@ export default function NewUploadPage() {
 
   const handleCreateBatch = async () => {
     if (!jobId || !hasUploadedResumes) return;
+
     await createBatch({
       jobDescriptionId: jobId,
       resumes: uploadedResumes,
       size: totalSize,
     });
+
     navigate(`/jobs/${jobId}`);
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-3xl mx-auto px-6 py-10 space-y-8">
-        {/* ====================== */}
-        {/* Page Header            */}
-        {/* ====================== */}
-        <div className="flex items-start justify-between gap-6">
-          <div className="space-y-1">
+      <div className="mx-auto max-w-5xl space-y-8 px-6 py-10">
+        {/* =============================== */}
+        {/* Hero */}
+        {/* =============================== */}
+
+        <div className="flex items-center justify-between gap-10">
+          <div className="space-y-5">
             {/* Breadcrumb */}
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
+
+            <div className="flex items-center gap-2 text-sm text-text-secondary">
               <button
                 onClick={() => navigate(`/jobs/${jobId}`)}
-                className="hover:text-foreground transition-colors"
+                className="transition-colors hover:text-text-primary"
               >
-                Job
+                Jobs
               </button>
+
               <svg
-                className="w-3 h-3"
+                className="h-4 w-4"
                 fill="none"
-                viewBox="0 0 12 12"
+                viewBox="0 0 24 24"
                 stroke="currentColor"
-                strokeWidth="1.5"
+                strokeWidth={2}
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M4.5 2.5l3 3.5-3 3.5"
+                  d="M9 5l7 7-7 7"
                 />
               </svg>
-              <span className="text-foreground font-medium">
-                Upload Resumes
-              </span>
+
+              <span className="text-text-primary">Upload Resumes</span>
             </div>
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Upload Resumes
-            </h1>
-            <p className="text-sm text-muted-foreground max-w-md">
-              Drop in your candidate PDFs. Once uploaded, start processing to
-              automatically screen them against the job criteria.
-            </p>
+
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.28em] text-action-primary">
+                Upload Workflow
+              </p>
+
+              <h1 className="text-5xl font-bold tracking-tight text-text-primary">
+                Upload Candidate Resumes
+              </h1>
+
+              <p className="mt-3 max-w-2xl text-lg leading-8 text-text-secondary">
+                Upload candidate resumes for AI-powered parsing, screening,
+                ranking, and hiring recommendations.
+              </p>
+            </div>
           </div>
 
-          {/* Step indicator */}
-          <div className="flex items-center gap-2 shrink-0 pt-1">
-            <StepDot
-              number={1}
-              label="Upload"
-              active={true}
-              done={hasUploadedResumes}
-            />
-            <div
-              className={`w-8 h-px transition-colors duration-300 ${
-                hasUploadedResumes ? "bg-action-primary" : "bg-border"
-              }`}
-            />
-            <StepDot
-              number={2}
-              label="Process"
-              active={hasUploadedResumes}
-              done={false}
-            />
+          {/* Right Stats */}
+
+          <div className="flex gap-4 shrink-0">
+            <div className="w-40 flex flex-col gap-1 items-center rounded-2xl border border-border-default bg-bg-secondary px-6 py-5">
+              <p className="text-sm text-text-secondary">Maximum</p>
+
+              <p className=" text-3xl font-bold text-text-primary">50</p>
+
+              <p className="text-xs text-text-secondary">Resumes Per Batch</p>
+            </div>
+
+            <div className="w-40 rounded-2xl gap-1 border flex flex-col items-center border-border-default bg-bg-secondary px-6 py-5">
+              <p className="text-sm text-text-secondary">Supported</p>
+
+              <p className="mt-2 text-xl font-bold text-emerald-400">
+                PDF / DOC
+              </p>
+
+              <p className="text-sm text-text-secondary">Formats</p>
+            </div>
           </div>
         </div>
 
-        {/* ====================== */}
-        {/* Upload Card            */}
-        {/* ====================== */}
+        {/* =============================== */}
+        {/* Upload Card */}
+        {/* =============================== */}
+
         {jobId && (
-          <div className="rounded-2xl border border-border bg-card overflow-hidden">
-            {/* Card header */}
-            <div className="px-5 pt-5 pb-3 border-b border-border flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-md bg-action-primary/10 flex items-center justify-center">
-                  <svg
-                    className="w-3.5 h-3.5 text-action-primary"
-                    fill="none"
-                    viewBox="0 0 16 16"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M8 2v8m0-8L5 5m3-3l3 3M2 11v1.5A1.5 1.5 0 003.5 14h9a1.5 1.5 0 001.5-1.5V11"
-                    />
-                  </svg>
+          <div className="overflow-hidden rounded-3xl border border-border-default bg-bg-secondary">
+            {/* Header */}
+
+            <div className="border-b border-border-default px-6 py-5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-action-primary/10">
+                    <svg
+                      className="h-4 w-4 text-action-primary"
+                      fill="none"
+                      viewBox="0 0 16 16"
+                      stroke="currentColor"
+                      strokeWidth="1.75"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8 2v8m0-8L5 5m3-3l3 3M2 11v1.5A1.5 1.5 0 003.5 14h9a1.5 1.5 0 001.5-1.5V11"
+                      />
+                    </svg>
+                  </div>
+
+                  <div>
+                    <h2 className="font-semibold text-text-primary">
+                      Resume Upload
+                    </h2>
+
+                    <p className="text-sm text-text-secondary">
+                      Upload candidate resumes before starting AI screening.
+                    </p>
+                  </div>
                 </div>
-                <span className="text-sm font-medium">Resume files</span>
+
+                {hasUploadedResumes && (
+                  <span className="rounded-full bg-state-success/10 px-3 py-1 text-xs font-semibold text-state-success">
+                    {resumeCount} Uploaded
+                  </span>
+                )}
               </div>
 
-              {hasUploadedResumes && (
-                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-state-success/10 text-state-success">
-                  {resumeCount} uploaded
-                </span>
-              )}
+              {/* Stepper */}
+
+              <div className="mt-6 flex justify-center">
+                <div className="flex items-center gap-4">
+                  <StepDot
+                    number={1}
+                    label="Upload"
+                    active={true}
+                    done={hasUploadedResumes}
+                  />
+
+                  <div
+                    className={`h-px w-14 transition-colors ${
+                      hasUploadedResumes
+                        ? "bg-state-success"
+                        : "bg-border-default"
+                    }`}
+                  />
+
+                  <StepDot
+                    number={2}
+                    label="Process"
+                    active={hasUploadedResumes}
+                    done={false}
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* Uploader body */}
-            <div className="p-5">
+            {/* Body */}
+
+            <div className="p-6">
               <ResumeUploader
                 onUploadComplete={(resumes, size) => {
                   setUploadedResumes(resumes);
@@ -142,9 +197,6 @@ export default function NewUploadPage() {
   );
 }
 
-/* ============================= */
-/* StepDot sub-component         */
-/* ============================= */
 function StepDot({
   number,
   label,
@@ -157,35 +209,36 @@ function StepDot({
   done: boolean;
 }) {
   return (
-    <div className="flex flex-col items-center gap-1">
+    <div className="flex flex-col items-center gap-2">
       <div
         className={`
-          w-7 h-7 rounded-full flex items-center justify-center
-          text-xs font-semibold transition-all duration-300
+          flex h-10 w-10 items-center justify-center rounded-full
+          text-sm font-semibold transition-all
           ${
             done
               ? "bg-state-success/10 text-state-success"
               : active
                 ? "bg-action-primary text-white"
-                : "bg-muted text-muted-foreground"
+                : "bg-bg-primary text-text-secondary border border-border-default"
           }
         `}
       >
         {done ? (
-          <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+          <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
             <path
               fillRule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
               clipRule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
             />
           </svg>
         ) : (
           number
         )}
       </div>
+
       <span
-        className={`text-xs transition-colors ${
-          active || done ? "text-foreground" : "text-muted-foreground"
+        className={`text-sm font-medium ${
+          active || done ? "text-text-primary" : "text-text-secondary"
         }`}
       >
         {label}

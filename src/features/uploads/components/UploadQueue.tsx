@@ -11,7 +11,7 @@ export default function UploadQueue({ items, onRetry, onRemove }: Props) {
   if (!items.length) return null;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {items.map((item) => (
         <UploadItem
           key={item.id}
