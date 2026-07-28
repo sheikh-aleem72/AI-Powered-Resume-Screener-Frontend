@@ -134,7 +134,9 @@ export const ResumeTable = ({ resumes }: Props) => {
                           text-action-primary
                         "
                       >
-                        {r.finalScore ? `${Math.round(r.finalScore)}%` : "—"}
+                        {r.finalScore
+                          ? `${(r.finalScore * 100).toFixed(1)}%`
+                          : "—"}
                       </div>
                     ) : (
                       <span className="text-text-muted">—</span>
