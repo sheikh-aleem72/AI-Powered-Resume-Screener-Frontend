@@ -26,7 +26,10 @@ export default function Sidebar() {
       {/* Logo                                                                */}
       {/* ------------------------------------------------------------------ */}
 
-      <div className="h-14 flex items-center px-4 border-b border-border shrink-0">
+      <div
+        className="h-14 flex items-center px-4 border-b border-border shrink-0 cursor-default"
+        onClick={() => navigate("/home")}
+      >
         <div className="flex items-center gap-2.5">
           <img
             className="h-8 w-8 rounded"
@@ -161,40 +164,6 @@ export default function Sidebar() {
             </svg>
           }
         />
-
-        {/* Divider before secondary section */}
-        <div className="h-px bg-border mx-1 my-2" />
-
-        <p className="px-3 pb-1 text-xs font-medium text-text-primary uppercase tracking-widest">
-          Account
-        </p>
-
-        <NavItem
-          to="/settings"
-          label="Settings"
-          icon={
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              viewBox="0 0 20 20"
-              stroke="currentColor"
-              strokeWidth="1.75"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M11.983 3.25a2 2 0 00-3.966 0A7.003 7.003 0 004.75 5.268a2 2 0 00-1.983 3.44 7.003 7.003 0 000 2.584 2 2 0 001.983 3.44 7.003 7.003 0 003.267 2.018 2 2 0 003.966 0 7.003 7.003 0 003.267-2.018 2 2 0 001.983-3.44 7.003 7.003 0 000-2.584 2 2 0 00-1.983-3.44A7.003 7.003 0 0011.983 3.25z"
-              />
-              <circle
-                cx="10"
-                cy="10"
-                r="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          }
-        />
       </nav>
 
       {/* ------------------------------------------------------------------ */}
@@ -204,7 +173,7 @@ export default function Sidebar() {
       {/* ------------------------------------------------------------------ */}
 
       <div className="shrink-0 border-t border-border px-3 py-3">
-        <div className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group">
+        <div className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-muted/50 transition-colors group">
           {/* Avatar initials circle */}
           <div className="w-8 h-8 rounded-full bg-action-primary/15 flex items-center justify-center shrink-0">
             <span className="text-xl font-semibold text-action-primary">
@@ -218,21 +187,6 @@ export default function Sidebar() {
             </p>
             <p className="text-xs text-text-muted truncate">{user?.email}</p>
           </div>
-
-          {/* Chevron hint */}
-          <svg
-            className="w-3.5 h-3.5 text-text-muted group-hover:text-foreground transition-colors shrink-0"
-            fill="none"
-            viewBox="0 0 16 16"
-            stroke="currentColor"
-            strokeWidth="1.75"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 4l4 4-4 4"
-            />
-          </svg>
         </div>
       </div>
     </aside>
