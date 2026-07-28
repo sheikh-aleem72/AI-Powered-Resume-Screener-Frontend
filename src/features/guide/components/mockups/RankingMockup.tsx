@@ -38,7 +38,7 @@ export const RankingMockup = () => {
       </div>
 
       <div className="mt-5 space-y-4">
-        {candidates.map((candidate, _) => (
+        {candidates.map((candidate) => (
           <div
             key={candidate.name}
             className="

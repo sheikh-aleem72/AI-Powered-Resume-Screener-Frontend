@@ -83,7 +83,7 @@ export const uploadResumes = async (files: File[]): Promise<UploadedResume> => {
   /* ---------------------------------------------------------------------- */
 
   const fileNames = files.map((file) => file.name);
-  let totalSize = files.reduce((sum, file) => sum + file.size, 0);
+  const totalSize = files.reduce((sum, file) => sum + file.size, 0);
 
   const presigned = await uploadApi.getPresignedUrls(fileNames);
 

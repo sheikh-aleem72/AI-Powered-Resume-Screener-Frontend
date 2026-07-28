@@ -81,8 +81,6 @@ export const ResumeDetailPage = () => {
         status={data.status}
         createdAt={data.createdAt}
         updatedAt={data.updatedAt}
-        processing={false}
-        location={data.location}
       />
 
       <CandidateOverview

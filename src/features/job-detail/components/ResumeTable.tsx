@@ -173,41 +173,6 @@ export const ResumeTable = ({ resumes }: Props) => {
                           </span>
                         ))}
                       </div>
-                    ) : r.passFail === "passed" ? (
-                      <div className="flex flex-wrap gap-2">
-                        {(r.explanation?.decision?.strengths ?? []).length >
-                        0 ? (
-                          r.explanation.decision.strengths.map(
-                            (strength: string, index: number) => (
-                              <span
-                                key={index}
-                                className="
-                                  inline-flex
-                                  items-start
-                                  gap-2
-                                  rounded-lg
-                                  border
-                                  border-border-default
-                                  bg-emerald-500/5
-                                  px-3
-                                  py-2
-                                  text-xs
-                                  leading-relaxed
-                                  text-text-primary
-                                "
-                              >
-                                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
-
-                                <span>{strength}</span>
-                              </span>
-                            )
-                          )
-                        ) : (
-                          <span className="text-text-muted">
-                            Candidate meets the required criteria.
-                          </span>
-                        )}
-                      </div>
                     ) : (
                       <span className="text-text-muted">
                         Resume is currently being processed...

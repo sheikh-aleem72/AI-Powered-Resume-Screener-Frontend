@@ -15,26 +15,34 @@ export class ErrorBoundary extends React.Component<
 > {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false };
+
+    this.state = {
+      hasError: false,
+    };
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
+    return {
+      hasError: true,
+      error,
+    };
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    // 🔒 Log later (Sentry, backend, etc.)
+    // TODO: Send to monitoring service (e.g. Sentry)
     console.error("UI Error:", error, info);
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-bg-primary text-text-primary flex items-center justify-center">
-          <div className="bg-bg-surface border border-border-default rounded-md p-4 max-w-md">
-            <h1 className="text-lg mb-2">Something went wrong</h1>
-            <p className="text-text-muted text-sm">
-              An unexpected UI error occurred. Please refresh the page.
+        <div className="flex min-h-screen items-center justify-center bg-bg-primary text-text-primary">
+          <div className="max-w-md rounded-xl border border-border-default bg-bg-surface p-6 text-center">
+            <h1 className="text-xl font-semibold">Something went wrong</h1>
+
+            <p className="mt-3 text-sm text-text-muted">
+              An unexpected error occurred while rendering this page. Please
+              refresh the page or try again later.
             </p>
           </div>
         </div>

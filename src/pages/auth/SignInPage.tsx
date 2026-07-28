@@ -52,7 +52,6 @@ export const SignInPage: React.FC = () => {
   const signinMutation = useMutation({
     mutationFn: authApi.signin,
     onSuccess: (response) => {
-      console.log("Response is: ", response);
       const { accessToken, refreshToken, user } = response;
 
       // Persist tokens for authenticated session
@@ -70,7 +69,6 @@ export const SignInPage: React.FC = () => {
       navigate("/home", { replace: true });
     },
     onError: (error: Error) => {
-      console.log("Error is:", error);
       handleBackendError(error.message);
     },
   });

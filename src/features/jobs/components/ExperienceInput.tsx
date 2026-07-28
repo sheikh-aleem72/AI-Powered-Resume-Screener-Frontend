@@ -1,8 +1,13 @@
-import { Controller } from "react-hook-form";
+import {
+  Controller,
+  type Control,
+  type UseFormSetValue,
+} from "react-hook-form";
+import type { CreateJobPayload } from "./JobForm";
 
 interface Props {
-  control: any;
-  setValue: any;
+  control: Control<CreateJobPayload>;
+  setValue: UseFormSetValue<CreateJobPayload>;
 }
 
 const LEVEL_TO_YEARS: Record<string, number> = {

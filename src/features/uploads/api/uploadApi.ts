@@ -9,11 +9,18 @@ export interface PresignedUpload {
   filename: string;
 }
 
+export interface PresignedUrlsResponse {
+  urls: PresignedUpload[];
+}
+
 export const uploadApi = {
   getPresignedUrls: async (fileNames: string[]): Promise<PresignedUpload[]> => {
-    const response = await httpClient.post("/cloudinary/presigned-urls", {
-      fileNames,
-    });
+    const response = await httpClient.post<PresignedUrlsResponse>(
+      "/cloudinary/presigned-urls",
+      {
+        fileNames,
+      }
+    );
 
     return response.urls;
   },

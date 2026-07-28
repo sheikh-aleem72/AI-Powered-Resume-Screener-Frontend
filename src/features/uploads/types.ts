@@ -12,3 +12,11 @@ export interface UploadFileItem {
 
   error?: string;
 }
+
+export interface UploadedResumeMeta {
+  filename: string;
+  size: number;
+  format: string;
+  url: string;
+  folder: string;
+}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useCreateBatch } from "../../features/uploads/hooks/useCreateBatch";
@@ -18,7 +18,7 @@ export default function NewUploadPage() {
   const hasUploadedResumes = uploadedResumes.length > 0;
   const resumeCount = uploadedResumes.length;
 
-  const handleCreateBatch = async () => {
+  const handleCreateBatch = useCallback(async () => {
     if (!jobId || !hasUploadedResumes) return;
 
     await createBatch({
@@ -28,7 +28,25 @@ export default function NewUploadPage() {
     });
 
     navigate(`/jobs/${jobId}`);
-  };
+  }, [
+    jobId,
+    hasUploadedResumes,
+    uploadedResumes,
+    totalSize,
+    createBatch,
+    navigate,
+  ]);
+
+  const handleUploadComplete = useCallback(
+    (
+      resumes: { resumeObjectId: string; resumeUrl: string }[],
+      size: number
+    ) => {
+      setUploadedResumes(resumes);
+      setTotalSize(size);
+    },
+    []
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -183,10 +201,7 @@ export default function NewUploadPage() {
 
             <div className="p-6">
               <ResumeUploader
-                onUploadComplete={(resumes, size) => {
-                  setUploadedResumes(resumes);
-                  setTotalSize(size);
-                }}
+                onUploadComplete={handleUploadComplete}
                 onCreateBatch={handleCreateBatch}
               />
             </div>

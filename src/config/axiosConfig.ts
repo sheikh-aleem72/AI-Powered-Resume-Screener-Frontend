@@ -8,10 +8,6 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 403) {
-      console.log("Auth token expired!");
-
-      // Clear local storage & redux
-
       // Redirect
       window.location.href = "/auth/signin";
     }
