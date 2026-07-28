@@ -51,6 +51,8 @@ export interface JobDetail {
 
   createdAt: string;
   updatedAt: string;
+
+  location: string;
 }
 
 /**
@@ -93,6 +95,7 @@ export interface ResumeProcessing {
 
   createdAt: string;
   updatedAt: string;
+  location: string;
 }
 
 /**

@@ -6,7 +6,7 @@ import { QuickTips } from "../../features/home/components/QuickTips";
 import { RecentJobs } from "../../features/home/components/RecentJobs";
 import { WorkspaceSummary } from "../../features/home/components/WorkspaceSummary";
 import { useWorkspaceSummary } from "../../features/home/hooks/useWorkspaceSummary";
-import { useJobs } from "../../features/jobs/hooks/useJobs";
+import { useJobs } from "../../features/job-detail/hooks/useJobs";
 import { tokenUtils } from "../../features/auth/utils/tokenUtils";
 
 export const HomePage = () => {

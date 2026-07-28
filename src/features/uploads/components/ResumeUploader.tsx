@@ -259,10 +259,12 @@ export default function ResumeUploader({
   return (
     <div className="space-y-4">
       {/* Dropzone */}
-      <Dropzone
-        onFilesSelected={handleFiles}
-        disabled={items.length >= MAX_RESUMES_PER_BATCH}
-      />
+      <div className="rounded-2xl bg-bg-primary p-3">
+        <Dropzone
+          onFilesSelected={handleFiles}
+          disabled={items.length >= MAX_RESUMES_PER_BATCH}
+        />
+      </div>
 
       {validationError && (
         <div className="rounded-lg border border-state-warning/30 bg-state-warning/10 px-4 py-3">
@@ -286,9 +288,7 @@ export default function ResumeUploader({
                 Unable to add resumes
               </p>
 
-              <p className="mt-1 text-sm text-muted-foreground">
-                {validationError}
-              </p>
+              <p className="mt-1 text-sm text-text-muted">{validationError}</p>
             </div>
           </div>
         </div>
@@ -345,7 +345,7 @@ export default function ResumeUploader({
                   ) : (
                     <div className="w-4 h-4 rounded-full border-2 border-border shrink-0" />
                   )}
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-text-muted">
                     {isUploading
                       ? `Uploading… ${uploadedCount} of ${totalFiles} done`
                       : `${remainingCount} file${remainingCount !== 1 ? "s" : ""} queued`}
@@ -353,7 +353,7 @@ export default function ResumeUploader({
                 </>
               )}
             </div>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-text-muted">
               {totalFiles} file{totalFiles !== 1 ? "s" : ""}
             </span>
           </div>
@@ -361,11 +361,11 @@ export default function ResumeUploader({
           {/* Progress bar — hidden once all uploaded */}
           {!allUploaded && (
             <div className="px-4 py-3 space-y-1.5 border-b border-border">
-              <div className="flex justify-between items-center text-xs text-muted-foreground">
+              <div className="flex justify-between items-center text-xs text-text-muted">
                 <span>Overall progress</span>
                 <span className="tabular-nums">{overallProgress}%</span>
               </div>
-              <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+              <div className="h-1.5 w-full rounded-full bg-gray-500 overflow-hidden">
                 <div
                   className="h-full rounded-full bg-action-primary transition-all duration-300"
                   style={{ width: `${overallProgress}%` }}
@@ -437,7 +437,7 @@ export default function ResumeUploader({
               </button>
 
               {!isUploading && uploadedCount > 0 && (
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs text-text-muted">
                   {uploadedCount} already uploaded
                 </span>
               )}
@@ -467,11 +467,11 @@ export default function ResumeUploader({
                   </svg>
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium leading-tight">
+                  <p className="text-sm text-white font-medium leading-tight">
                     {uploadedCount} resume{uploadedCount !== 1 ? "s" : ""} ready
                     to process
                   </p>
-                  <p className="text-xs text-muted-foreground leading-tight mt-0.5">
+                  <p className="text-xs text-text-muted leading-tight mt-0.5">
                     Candidates will be automatically scored and ranked.
                   </p>
                 </div>
@@ -483,7 +483,7 @@ export default function ResumeUploader({
                   <button
                     onClick={onCancel}
                     className="
-                      px-4 py-2 text-sm text-muted-foreground
+                      px-4 py-2 text-sm text-text-muted
                       border border-border rounded-lg
                       hover:text-foreground hover:border-foreground/30
                       transition-colors

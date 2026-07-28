@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { jobsApi, type JobDetail } from "../api/index";
+import { jobsApi, type JobDetail } from "../../jobs/api/index";
 
 export const useJob = (jobId: string) => {
   return useQuery<JobDetail>({

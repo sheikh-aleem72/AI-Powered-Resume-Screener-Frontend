@@ -9,7 +9,7 @@ import ProtectedRoute from "../layouts/ProtectedRoute";
 import { SignInPage } from "../../pages/auth/SignInPage";
 import { ForgetPasswordPage } from "../../pages/auth/ForgetPasswordPage";
 import { JobsPage } from "../../pages/jobs/JobsPage";
-import { JobDetailPage } from "../../pages/jobs/JobDetailPage";
+import { JobDetailPage } from "../../pages/jobDetail/JobDetailPage";
 import { ResumeDetailPage } from "../../pages/resume/ResumeDetailPage";
 import NewUploadPage from "../../pages/uploads/NewUploadPage";
 import JobCreatePage from "../../pages/jobs/JobCreatePage";

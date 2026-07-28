@@ -122,85 +122,103 @@ export const VerifyOtpPage: React.FC = () => {
   }
 
   return (
-    <div className="h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Ambient background glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.08),transparent_60%)]" />
-
-      <div className="relative w-full max-w-md px-4">
-        <div className="bg-bg-surface/80 backdrop-blur-xl rounded-xl p-8 border border-border-subtle shadow-lg">
-          {/* Header */}
-          <h1 className="text-2xl font-semibold text-text-primary mb-2">
-            Verify Your Email
-          </h1>
-          <p className="text-sm text-text-muted mb-6">
-            Enter the verification code sent to{" "}
-            <span className="font-medium text-text-primary">{email}</span>
-          </p>
-
-          <form onSubmit={handleSubmit} className="space-y-3">
-            {/* OTP Input */}
-            <div>
-              <label
-                htmlFor="otp"
-                className="block text-sm text-text-secondary mb-1.5"
-              >
-                Verification Code
-              </label>
-
-              <input
-                id="otp"
-                type="text"
-                value={otp}
-                onChange={handleOtpChange}
-                disabled={isSubmitting}
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                maxLength={6}
-                placeholder="000000"
-                className={`
-                  w-full px-3 py-2.5 rounded-md
-                  text-center text-lg tracking-widest
-                  bg-bg-secondary text-text-primary placeholder-text-muted
-                  border transition focus:outline-none
-                  ${
-                    errorMessage
-                      ? "border-red-500 focus:border-red-500 focus:ring-red-500/30"
-                      : "border-border-default focus:border-action-primary focus:ring-action-primary/30"
-                  }
-                `}
-              />
+    <div className="min-h-screen overflow-hidden bg-background">
+      <div className="mx-auto flex min-h-screen max-w-7xl items-center justify-center gap-20 px-10">
+        {/* ========================================= */}
+        {/* Right Verification Card                   */}
+        {/* ========================================= */}
+        <div className="relative w-full max-w-xl">
+          <div className="rounded-3xl border border-border-default bg-bg-surface/90 p-10 backdrop-blur-xl shadow-2xl">
+            {/* Badge */}
+            <div className="mb-5 inline-flex rounded-full bg-action-primary/10 px-4 py-1">
+              <span className="text-xs font-semibold uppercase tracking-[0.25em] text-action-primary">
+                Email Verification
+              </span>
             </div>
 
-            {/* Backend / validation error */}
-            {errorMessage && (
-              <div className="text-sm text-red-500 bg-red-500/10 border border-red-500/30 rounded-md px-3 py-2">
-                {errorMessage}
-              </div>
-            )}
+            {/* Heading */}
+            <h1 className="text-5xl font-bold tracking-tight text-text-primary">
+              Verify Your Email
+            </h1>
 
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={!isOtpComplete || isSubmitting}
-              className="
-                w-full py-3 mt-2 rounded-md font-medium
-                flex items-center justify-center gap-2
-                text-text-primary
-                bg-action-primary
-                hover:bg-action-primary-hover
-                active:scale-[0.99]
-                transition shadow-md
-                disabled:bg-action-primary/40
-                disabled:cursor-not-allowed
-                disabled:hover:bg-action-primary/40
-              "
-            >
-              {isSubmitting && (
-                <span className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+            <p className="mt-3 mb-8 text-lg leading-8 text-text-secondary">
+              Enter the 6-digit verification code sent to
+              <br />
+              <span className="font-semibold text-text-primary">{email}</span>
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* OTP */}
+              <div>
+                <label
+                  htmlFor="otp"
+                  className="mb-2 block text-sm font-medium text-text-secondary"
+                >
+                  Verification Code
+                </label>
+
+                <input
+                  id="otp"
+                  type="text"
+                  value={otp}
+                  onChange={handleOtpChange}
+                  disabled={isSubmitting}
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={6}
+                  placeholder="000000"
+                  className={`w-full rounded-xl border bg-bg-primary px-4 py-4 text-center text-3xl tracking-[0.5em] text-text-primary placeholder:text-text-muted transition
+                ${
+                  errorMessage
+                    ? "border-red-500"
+                    : "border-border-default focus:border-action-primary"
+                }`}
+                />
+
+                <p className="mt-2 text-xs text-text-muted">
+                  Check your inbox and spam folder if you don't see the email.
+                </p>
+              </div>
+
+              {/* Error */}
+              {errorMessage && (
+                <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+                  {errorMessage}
+                </div>
               )}
-              {isSubmitting ? "Verifying…" : "Verify"}
-            </button>
-          </form>
+
+              {/* Verify Button */}
+              <button
+                type="submit"
+                disabled={!isOtpComplete || isSubmitting}
+                className="mt-2 w-full rounded-xl bg-action-primary py-3 font-semibold text-white transition hover:bg-action-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isSubmitting ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    Verifying...
+                  </div>
+                ) : (
+                  "Verify Email"
+                )}
+              </button>
+
+              {/* Divider */}
+              <div className="border-t border-border-default pt-5">
+                <p className="text-center text-sm text-text-secondary">
+                  Entered the wrong email?
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => navigate("/auth/signup")}
+                  className="mt-2 w-full text-center font-semibold text-action-primary transition hover:underline"
+                >
+                  Back to Sign Up
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

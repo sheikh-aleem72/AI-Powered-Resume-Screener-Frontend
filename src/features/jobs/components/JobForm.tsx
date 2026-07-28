@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { SkillsInput } from "./SkillsInput";
 import { ExperienceInput } from "./ExperienceInput";
 import { useCreateJob } from "../hooks/useCreateJob";
+import { SectionHeader } from "./job-create/SectionHeader";
+import { BasicInformationCard } from "./job-create/BasicInformationCard";
+import { DescriptionCard } from "./job-create/DescriptionCard";
 
 export interface CreateJobPayload {
   title: string;
@@ -23,18 +26,20 @@ export const JobForm = () => {
     register,
     handleSubmit,
     control,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<CreateJobPayload>({
     defaultValues: {
       required_skills: [],
       prefered_skills: [],
-      experience_level: "Mid",
+      experience_level: "Junior",
       min_experience_years: 0,
     },
   });
 
-  const inputClass =
-    "w-full px-3 py-2 bg-gray-300 border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-action-primary text-black";
+  // const inputClass =
+  //   "w-full px-3 py-2 bg-gray-300 border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-action-primary text-black";
 
   const onSubmit = (data: CreateJobPayload) => {
     mutate(data, {
@@ -50,90 +55,138 @@ export const JobForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="bg-bg-secondary border border-border-default rounded-2xl p-6 space-y-8"
       >
-        {/* Header */}
-        <div>
-          <h2 className="text-xl font-semibold text-text-primary">
-            Create New Job
-          </h2>
-          <p className="text-sm text-text-secondary">
-            Define clear requirements to improve candidate matching
-          </p>
-        </div>
+        <SectionHeader
+          step={1}
+          eyebrow="Job Details"
+          title="Basic Information"
+          description="Provide the essential details about the role you're hiring for."
+        />
 
-        {/* Basics */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm text-text-secondary mb-1 block">
-              Job Title *
-            </label>
-            <input
-              {...register("title", { required: "Title is required" })}
-              className={inputClass}
-            />
-            {errors.title && (
-              <p className="text-sm text-state-error">{errors.title.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="text-sm text-text-secondary mb-1 block">
-              Company *
-            </label>
-            <input
-              {...register("company", { required: "Company is required" })}
-              className={inputClass}
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="text-sm text-text-secondary mb-1 block">
-            Location
-          </label>
-          <input {...register("location")} className={inputClass} />
+        <div className="mt-6">
+          <BasicInformationCard register={register} errors={errors} />
         </div>
 
         {/* Description */}
-        <div>
-          <label className="text-sm text-text-secondary mb-1 block">
-            Job Description *
-          </label>
-          <textarea
-            {...register("description", {
-              required: "Description is required",
-              minLength: { value: 30, message: "Too short" },
-            })}
-            className={`${inputClass} min-h-30`}
+
+        <div className="space-y-6">
+          <SectionHeader
+            step={2}
+            eyebrow="Role Description"
+            title="Job Description"
+            description="Describe the responsibilities, qualifications, and expectations for this role."
           />
+
+          <DescriptionCard register={register} watch={watch} errors={errors} />
         </div>
 
         {/* Skills */}
-        <div className="space-y-4">
-          <SkillsInput
-            name="required_skills"
-            label="Required Skills *"
-            control={control}
-            required
+        <div className="space-y-6">
+          <SectionHeader
+            step={3}
+            eyebrow="Requirements"
+            title="Skills"
+            description="Define the skills ClearHire should prioritize when ranking candidates."
           />
-          <SkillsInput
-            name="prefered_skills"
-            label="Preferred Skills"
-            control={control}
-          />
+
+          <div className="rounded-3xl border border-border-default bg-bg-secondary p-8 space-y-8">
+            <div>
+              <SkillsInput
+                name="required_skills"
+                label="Required Skills"
+                control={control}
+                required
+              />
+              <p className="mt-3 text-sm text-text-secondary">
+                Example: React • Node.js • PostgreSQL • AWS
+              </p>
+            </div>
+
+            <div className="border-t border-border-subtle" />
+
+            <div>
+              <SkillsInput
+                name="prefered_skills"
+                label="Preferred Skills"
+                control={control}
+              />
+              <p className="mt-3 text-sm text-text-secondary">
+                Example: Docker • Kubernetes • GraphQL
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Experience */}
-        <ExperienceInput control={control} />
+        <div className="space-y-6">
+          <SectionHeader
+            step={4}
+            eyebrow="Requirements"
+            title="Experience"
+            description="Define the minimum experience expected for this role."
+          />
 
-        {/* Submit */}
-        <div className="flex justify-end pt-4 border-t border-border-default">
-          <button
-            type="submit"
-            disabled={isPending}
-            className="font-medium px-4 py-2 bg-blue-600 rounded text-white disabled:opacity-50"
-          >
-            {isPending ? "Creating..." : "Create Job"}
-          </button>
+          <div className="rounded-3xl border border-border-default bg-bg-secondary p-8">
+            <ExperienceInput control={control} setValue={setValue} />
+          </div>
+        </div>
+
+        <div className="border-t border-border-subtle pt-8">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            {/* Information */}
+
+            <div>
+              <h4 className="text-base font-semibold text-text-primary">
+                Ready to create this hiring pipeline?
+              </h4>
+
+              <p className="mt-1 text-sm text-text-secondary">
+                ClearHire will save this job and you'll be able to upload
+                resumes immediately.
+              </p>
+            </div>
+
+            {/* Actions */}
+
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => navigate("/jobs")}
+                disabled={isPending}
+                className="
+          rounded-xl
+          border
+          border-border-default
+          px-5
+          py-3
+          font-medium
+          text-text-secondary
+          transition
+          hover:bg-bg-primary
+        "
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                disabled={isPending}
+                className="
+          rounded-xl
+          bg-action-primary
+          px-6
+          py-3
+          font-semibold
+          text-white
+          transition
+          hover:opacity-90
+          disabled:cursor-not-allowed
+          disabled:opacity-50
+        "
+              >
+                {isPending ? "Creating Pipeline..." : "Create Hiring Pipeline"}
+              </button>
+            </div>
+          </div>
         </div>
       </form>
     </div>

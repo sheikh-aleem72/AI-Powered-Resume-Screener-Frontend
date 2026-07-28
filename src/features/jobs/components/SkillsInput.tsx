@@ -28,12 +28,38 @@ export const SkillsInput = ({ name, label, control, required }: Props) => {
           </label>
 
           {/* Input container */}
-          <div className="p-2 border border-border-default rounded-lg bg-gray-300">
+          <div
+            className="
+              rounded-2xl
+              border
+              border-border-default
+              bg-bg-primary
+              p-4
+              transition-all
+              focus-within:border-action-primary
+              focus-within:ring-2
+              focus-within:ring-action-primary/20
+            
+            "
+          >
             <div className="flex flex-wrap gap-2 mb-2">
               {field.value?.map((skill: string, index: number) => (
                 <span
                   key={index}
-                  className="flex items-center gap-1 px-2 py-1 text-sm rounded-md bg-white text-black"
+                  className="
+                      inline-flex
+                      items-center
+                      gap-2
+                      rounded-full
+                      border
+                      border-action-primary/20
+                      bg-action-primary/10
+                      px-3
+                      py-1.5
+                      text-sm
+                      font-medium
+                      text-action-primary
+                    "
                 >
                   {skill}
                   <button
@@ -43,7 +69,13 @@ export const SkillsInput = ({ name, label, control, required }: Props) => {
                         field.value.filter((_: any, i: number) => i !== index)
                       )
                     }
-                    className="text-state-error hover:opacity-80"
+                    className="
+                    rounded-full
+                    p-0.5
+                    transition-colors
+                    hover:bg-red-500/10
+                    hover:text-red-400
+                  "
                   >
                     ×
                   </button>
@@ -60,16 +92,24 @@ export const SkillsInput = ({ name, label, control, required }: Props) => {
 
                   const newSkill = input.trim();
 
-                  // ❗ prevent duplicates
-                  if (!field.value.includes(newSkill)) {
+                  const exists = field.value.some(
+                    (skill: string) =>
+                      skill.toLowerCase() === newSkill.toLowerCase()
+                  );
+
+                  if (!exists) {
                     field.onChange([...field.value, newSkill]);
                   }
 
                   setInput("");
                 }
               }}
-              placeholder="Type skill and press Enter"
-              className="w-full bg-transparent outline-none text-sm text-black placeholder:text-text-muted"
+              placeholder="Type a skill and press Enter..."
+              className="  w-full
+                bg-transparent
+                text-text-primary
+                placeholder:text-text-secondary
+                outline-none"
             />
           </div>
 
