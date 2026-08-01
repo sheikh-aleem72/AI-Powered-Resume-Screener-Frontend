@@ -29,10 +29,9 @@ export const ContactForm = () => {
         reset();
       },
 
-      onError: (error: any) => {
+      onError: (error: Error) => {
         toast.error(
-          error?.response?.data?.message ??
-            "Something went wrong. Please try again."
+          error?.message ?? "Something went wrong. Please try again."
         );
       },
     });

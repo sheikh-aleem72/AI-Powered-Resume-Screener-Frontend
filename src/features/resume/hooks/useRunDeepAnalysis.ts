@@ -4,13 +4,11 @@ import { resumeApi } from "../api";
 export const useRunDeepAnalysis = (resumeProcessingId: string) => {
   const queryClient = useQueryClient();
 
-  console.log("Resume id: ", resumeProcessingId);
   return useMutation({
     mutationFn: async () => {
       await resumeApi.createDeepAnalysis(resumeProcessingId);
     },
     onSuccess: () => {
-      console.log("Result");
       // Invalidate resume query so polling re-evaluates immediately
       queryClient.invalidateQueries({
         queryKey: ["resume-processing", resumeProcessingId],

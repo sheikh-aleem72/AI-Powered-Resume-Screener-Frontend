@@ -1,3 +1,4 @@
+import type { ResumeExplanation } from "../../jobs/api";
 import { DecisionCard } from "./DecisionCard";
 import { ExperienceCard } from "./ExperienceCard";
 import { SkillsCard } from "./SkillsCard";
@@ -5,7 +6,7 @@ import { SkillsCard } from "./SkillsCard";
 interface AiEvaluationProps {
   processing: boolean;
 
-  explanation: any;
+  explanation: ResumeExplanation;
 }
 
 export const AiEvaluation = ({

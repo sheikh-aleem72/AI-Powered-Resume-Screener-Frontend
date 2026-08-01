@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import Dropzone from "./Dropzone";
 import UploadQueue from "./UploadQueue";
 
-import type { UploadFileItem } from "../types";
+import type { UploadedResumeMeta, UploadFileItem } from "../types";
 
-import { uploadApi } from "../api/uploadApi";
+import { uploadApi, type PresignedUpload } from "../api/uploadApi";
 import { resumeApi } from "../../resume/api";
 
 const MAX_RESUMES_PER_BATCH = 50;
@@ -64,7 +64,7 @@ export default function ResumeUploader({
       .filter((i) => i.status === "uploaded")
       .reduce((sum, i) => sum + i.file.size, 0);
     onUploadComplete(uploaded, size);
-  }, [items]);
+  }, [items, onUploadComplete]);
 
   /* -------------------------------------------------------------------------- */
   /*                              File Handlers                                 */
@@ -159,7 +159,10 @@ export default function ResumeUploader({
   /*                              Upload Logic                                  */
   /* -------------------------------------------------------------------------- */
 
-  const uploadSingle = async (item: UploadFileItem, config: any) => {
+  const uploadSingle = async (
+    item: UploadFileItem,
+    config: PresignedUpload
+  ) => {
     setItems((prev) =>
       prev.map((i) =>
         i.id === item.id ? { ...i, status: "uploading", progress: 0 } : i
@@ -211,8 +214,11 @@ export default function ResumeUploader({
     }
   };
 
-  const processQueue = async (queued: UploadFileItem[], presigned: any[]) => {
-    const results: any[] = [];
+  const processQueue = async (
+    queued: UploadFileItem[],
+    presigned: PresignedUpload[]
+  ) => {
+    const results: UploadedResumeMeta[] = [];
     let currentIndex = 0;
     const worker = async () => {
       while (currentIndex < queued.length) {

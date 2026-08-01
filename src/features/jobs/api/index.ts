@@ -61,6 +61,45 @@ export interface JobDetail {
  *
  * This mirrors the backend `ResumeProcessing` document.
  */
+
+export interface ResumeExplanation {
+  decision: {
+    status: string;
+    reasons: string[];
+  };
+
+  skills: {
+    matched: string[];
+    missing: string[];
+  };
+
+  experience: {
+    requiredYears: number;
+    candidateYears: number;
+    meetsRequirement: boolean;
+  };
+}
+
+export interface DeepAnalysisResult {
+  overallFit: string;
+  summary: string;
+
+  matchedSkills: string[];
+  missingSkills: string[];
+
+  strengths: string[];
+  concerns: string[];
+
+  experienceAssessment: string;
+  recommendation: string;
+}
+
+export interface DeepAnalysis {
+  analysis: DeepAnalysisResult;
+
+  createdAt?: string;
+}
+
 export interface ResumeProcessing {
   _id: string;
 
@@ -83,7 +122,7 @@ export interface ResumeProcessing {
 
   passFail: string;
 
-  analysis: any;
+  analysis: DeepAnalysis | null;
 
   analysisStatus: string;
 
@@ -91,7 +130,7 @@ export interface ResumeProcessing {
 
   analysisError: string;
 
-  explanation: any | null;
+  explanation: ResumeExplanation;
 
   createdAt: string;
   updatedAt: string;
@@ -138,17 +177,14 @@ export interface createJobPayload {
   location?: string;
   description: string;
   required_skills: string[];
-  prefered_skills?: string[];
+  prefered_skills: string[];
   experience_level: string;
   min_experience_years: number;
 }
 
 export interface CreateJobResponse {
-  success: boolean;
-  data: {
-    _id: string;
-    title: string;
-  };
+  _id: string;
+  title: string;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -223,7 +259,7 @@ export const jobsApi = {
   },
 
   createJob: (payload: createJobPayload) => {
-    return httpClient.post(`/job/`, payload);
+    return httpClient.post<CreateJobResponse>(`/job/`, payload);
   },
 
   deleteJob: (jobId: string) => {

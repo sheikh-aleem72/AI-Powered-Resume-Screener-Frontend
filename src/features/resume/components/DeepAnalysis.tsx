@@ -6,9 +6,10 @@ import {
   Sparkles,
   TrendingUp,
 } from "lucide-react";
+import type { DeepAnalysis as DeepAnalysisInterface } from "../../jobs/api";
 
 interface DeepAnalysisProps {
-  analysis: any | null;
+  analysis: DeepAnalysisInterface | null;
   analysisStatus: string;
   analysisCompletedAt?: string;
   onRunAnalysis: () => void;

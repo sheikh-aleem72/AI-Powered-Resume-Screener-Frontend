@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import { useJob } from "../../features/job-detail/hooks/useJob";
@@ -35,10 +35,6 @@ export const JobDetailPage = () => {
       : undefined;
 
   const [page, setPage] = useState(1);
-
-  useEffect(() => {
-    setPage(1);
-  }, [passFail]);
 
   //----------------------------------------------------
   // Queries
@@ -152,6 +148,7 @@ export const JobDetailPage = () => {
           totalCandidates={totalCandidates}
           passFail={passFail}
           onFilterChange={(value) => {
+            setPage(1);
             if (value) {
               setSearchParams({ passFail: value });
             } else {

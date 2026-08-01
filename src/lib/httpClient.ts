@@ -61,27 +61,27 @@ const request = async <T>(
 };
 
 export const httpClient = {
-  get: <T = any>(endpoint: string): Promise<T> => {
+  get: <T = unknown>(endpoint: string): Promise<T> => {
     return request<T>(endpoint, {
       method: "GET",
     });
   },
 
-  post: <T = any>(endpoint: string, body?: any): Promise<T> => {
+  post: <T = unknown>(endpoint: string, body?: unknown): Promise<T> => {
     return request<T>(endpoint, {
       method: "POST",
       body: body ? JSON.stringify(body) : undefined,
     });
   },
 
-  put: <T = any>(endpoint: string, body?: any): Promise<T> => {
+  put: <T = unknown>(endpoint: string, body?: unknown): Promise<T> => {
     return request<T>(endpoint, {
       method: "PUT",
       body: body ? JSON.stringify(body) : undefined,
     });
   },
 
-  delete: <T = any>(endpoint: string): Promise<T> => {
+  delete: <T = unknown>(endpoint: string): Promise<T> => {
     return request<T>(endpoint, {
       method: "DELETE",
     });

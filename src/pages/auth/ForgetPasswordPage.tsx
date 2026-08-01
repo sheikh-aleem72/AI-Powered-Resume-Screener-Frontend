@@ -65,7 +65,6 @@ export const ForgetPasswordPage: React.FC = () => {
       setStep("reset");
       setFieldErrors({});
       setFormError(null);
-      console.log("Reset request done!");
     },
     onError: (error: Error) => {
       handleBackendError(error.message);

@@ -1,11 +1,4 @@
-import {
-  Calendar,
-  Clock3,
-  FileText,
-  MapPin,
-  Medal,
-  Trophy,
-} from "lucide-react";
+import { Calendar, Clock3, FileText, Medal, Trophy } from "lucide-react";
 import { StatusBadge } from "../../jobs/components/StatusBadge";
 import { formatRelativeTime } from "../../../utils/formatRelativeTime";
 
@@ -23,10 +16,6 @@ interface ResumeHeroProps {
   createdAt: string;
 
   updatedAt: string;
-
-  processing: boolean;
-
-  location: string;
 }
 
 export const ResumeHero = ({
@@ -37,8 +26,6 @@ export const ResumeHero = ({
   status,
   createdAt,
   updatedAt,
-  processing,
-  location,
 }: ResumeHeroProps) => {
   const score =
     finalScore !== null && finalScore !== undefined
@@ -78,13 +65,6 @@ export const ResumeHero = ({
           </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-6 text-sm text-text-secondary">
-            {location && (
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-action-primary" />
-                <span>{location}</span>
-              </div>
-            )}
-
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-action-primary" />
               <span>
@@ -116,7 +96,7 @@ export const ResumeHero = ({
         <div className="flex min-w-65 flex-col items-end gap-6">
           <StatusBadge
             status={
-              processing
+              status === "queued" || status === "processing"
                 ? "processing"
                 : status === "completed"
                   ? "completed"
@@ -140,7 +120,7 @@ export const ResumeHero = ({
             </p>
 
             <div className="mt-5">
-              {processing ? (
+              {status === "processing" ? (
                 <>
                   <p className="text-3xl font-bold text-action-primary">...</p>
 

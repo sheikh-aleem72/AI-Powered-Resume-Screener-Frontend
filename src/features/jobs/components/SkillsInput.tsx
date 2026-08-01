@@ -1,10 +1,11 @@
-import { Controller } from "react-hook-form";
+import { Controller, type Control } from "react-hook-form";
 import { useState } from "react";
+import type { CreateJobPayload } from "./JobForm";
 
 interface Props {
   name: "required_skills" | "prefered_skills";
   label: string;
-  control: any;
+  control: Control<CreateJobPayload>;
   required?: boolean;
 }
 
@@ -66,7 +67,9 @@ export const SkillsInput = ({ name, label, control, required }: Props) => {
                     type="button"
                     onClick={() =>
                       field.onChange(
-                        field.value.filter((_: any, i: number) => i !== index)
+                        field.value?.filter(
+                          (_: string, i: number) => i !== index
+                        )
                       )
                     }
                     className="
@@ -92,7 +95,7 @@ export const SkillsInput = ({ name, label, control, required }: Props) => {
 
                   const newSkill = input.trim();
 
-                  const exists = field.value.some(
+                  const exists = field.value?.some(
                     (skill: string) =>
                       skill.toLowerCase() === newSkill.toLowerCase()
                   );

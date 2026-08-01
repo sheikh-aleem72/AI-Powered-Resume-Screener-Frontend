@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   jobsApi,
+  type JobResumesResponse,
   type JobUpdatesResponse,
   type ResumeProcessing,
 } from "../../jobs/api/index";
@@ -19,7 +20,7 @@ export const useJobUpdates = (jobId: string) => {
     const updates = query.data.updates;
     queryClient.setQueriesData(
       { queryKey: ["job-resumes", jobId] },
-      (oldData: any) => {
+      (oldData: JobResumesResponse) => {
         if (!oldData || !oldData.resumes) return oldData;
         return {
           ...oldData,
@@ -32,7 +33,7 @@ export const useJobUpdates = (jobId: string) => {
               ...resume,
               status: match.status,
               analysisStatus: match.analysisStatus,
-              passed: match.passFail,
+              passFail: match.passFail,
               rank: match.rank,
               finalScore: match.finalScore,
               explanation: match.explanation,

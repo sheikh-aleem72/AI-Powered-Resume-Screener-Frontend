@@ -26,7 +26,7 @@ const API_BASE = import.meta.env.VITE_BACKEND_API_URL;
  * - We do NOT return this shape to consumers.
  * - Errors are thrown instead of returned.
  */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data?: T;
   error?: string;
 }
@@ -97,7 +97,7 @@ export interface AuthResponse {
  * - Errors are thrown to integrate cleanly with React Query
  */
 const apiClient = {
-  post: async <T = any>(endpoint: string, body: any): Promise<T> => {
+  post: async <T = unknown>(endpoint: string, body: unknown): Promise<T> => {
     const headers: HeadersInit = {
       "Content-Type": "application/json",
     };

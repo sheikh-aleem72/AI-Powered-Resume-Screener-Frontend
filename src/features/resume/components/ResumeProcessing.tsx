@@ -44,7 +44,6 @@ export const ResumeProcessing = ({
         passFail={passFail}
         rank={rank}
         finalScore={finalScore}
-        processing
       />
 
       <section className="rounded-3xl border border-border-default bg-bg-secondary p-10">

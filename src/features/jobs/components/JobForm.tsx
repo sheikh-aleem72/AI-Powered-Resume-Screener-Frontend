@@ -13,7 +13,7 @@ export interface CreateJobPayload {
   location?: string;
   description: string;
   required_skills: string[];
-  prefered_skills?: string[];
+  prefered_skills: string[];
   experience_level: string;
   min_experience_years: number;
 }
@@ -68,7 +68,7 @@ export const JobForm = () => {
 
         {/* Description */}
 
-        <div className="space-y-6">
+        <div className="space-y-6s">
           <SectionHeader
             step={2}
             eyebrow="Role Description"
